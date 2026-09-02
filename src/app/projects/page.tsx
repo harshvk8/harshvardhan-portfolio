@@ -1,35 +1,52 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-import { PageShell } from "@/components/page-shell";
+import { Container } from "@/components/container";
+import { ProjectCard } from "@/components/project-card";
+import { Reveal } from "@/components/reveal";
 import { projects } from "@/content";
+import { siteConfig } from "@/lib/site";
 
-export const metadata: Metadata = { title: "Projects" };
+export const metadata: Metadata = {
+  title: "Projects",
+  description: `Software projects by ${siteConfig.name}, each with a full case study: problem, reasoning, architecture, challenges, and outcome.`,
+};
 
 export default function ProjectsPage() {
+  const featured = projects.filter((p) => p.featured);
+  const rest = projects.filter((p) => !p.featured);
+
   return (
-    <PageShell
-      title="Projects"
-      intro="Selected for what they demonstrate, not the count of technologies. — Phase 1, Screens 4–10."
-    >
-      <ul className="grid gap-4 sm:grid-cols-2">
-        {projects.map((project) => (
-          <li key={project.slug} className="border-border bg-surface rounded-lg border p-5">
-            <div className="flex items-baseline justify-between gap-4">
-              <h2 className="font-medium">{project.name}</h2>
-              <span className="text-muted font-mono text-xs">{project.year}</span>
-            </div>
-            <p className="text-muted mt-2 text-sm">{project.tagline}</p>
-            <p className="text-muted mt-3 font-mono text-xs">{project.stack.join(" · ")}</p>
-            <Link
-              href={`/projects/${project.slug}`}
-              className="text-accent mt-4 inline-flex items-center gap-1.5 text-sm"
-            >
-              Explore project <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </PageShell>
+    <Container className="py-16">
+      <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">Projects</h1>
+      <p className="text-muted mt-3 max-w-2xl">
+        Selected for what they demonstrate about problem-finding and engineering judgement, not the
+        number of technologies involved. Every card opens a full case study.
+      </p>
+
+      {featured.length > 0 ? (
+        <section className="mt-10">
+          <h2 className="text-accent font-mono text-xs tracking-widest uppercase">Featured</h2>
+          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+            {featured.map((project, i) => (
+              <Reveal key={project.slug} delay={i * 0.05}>
+                <ProjectCard project={project} />
+              </Reveal>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      {rest.length > 0 ? (
+        <section className="mt-12">
+          <h2 className="text-muted font-mono text-xs tracking-widest uppercase">More</h2>
+          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+            {rest.map((project, i) => (
+              <Reveal key={project.slug} delay={i * 0.05}>
+                <ProjectCard project={project} />
+              </Reveal>
+            ))}
+          </div>
+        </section>
+      ) : null}
+    </Container>
   );
 }

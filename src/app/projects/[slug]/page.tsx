@@ -1,8 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
-import { getProject, projects } from "@/content";
+import { ArrowLeft, ArrowRight, ExternalLink } from "lucide-react";
+import { Container } from "@/components/container";
+import { Badge } from "@/components/badge";
+import { ButtonAnchor } from "@/components/button-link";
+import { CaseStudyBody } from "@/components/case-study";
+import { GitHubIcon } from "@/components/icons";
+import { getAdjacentProjects, getProject, projects } from "@/content";
+import { siteConfig } from "@/lib/site";
 
 export function generateStaticParams() {
   return projects.map((project) => ({ slug: project.slug }));
@@ -14,28 +20,27 @@ export async function generateMetadata({
   const { slug } = await params;
   const project = getProject(slug);
   if (!project) return {};
-  return { title: project.name, description: project.tagline };
+  return {
+    title: project.name,
+    description: project.tagline,
+    alternates: { canonical: `/projects/${project.slug}` },
+    openGraph: {
+      title: `${project.name} — ${siteConfig.name}`,
+      description: project.tagline,
+      url: `/projects/${project.slug}`,
+    },
+  };
 }
-
-/** Ordered case-study sections, mirroring the portfolio plan. */
-const sections: { key: string; label: string }[] = [
-  { key: "problem", label: "The problem" },
-  { key: "observation", label: "Observation" },
-  { key: "question", label: "Question" },
-  { key: "userNeed", label: "User need" },
-  { key: "decision", label: "Technical decision" },
-  { key: "architecture", label: "Architecture" },
-];
 
 export default async function ProjectPage({ params }: PageProps<"/projects/[slug]">) {
   const { slug } = await params;
   const project = getProject(slug);
   if (!project) notFound();
 
-  const cs = project.caseStudy;
+  const { prev, next } = getAdjacentProjects(project.slug);
 
   return (
-    <article className="mx-auto w-full max-w-3xl px-4 py-16 sm:px-6">
+    <Container width="prose" className="py-16">
       <Link
         href="/projects"
         className="text-muted hover:text-foreground inline-flex items-center gap-1.5 text-sm"
@@ -43,56 +48,74 @@ export default async function ProjectPage({ params }: PageProps<"/projects/[slug
         <ArrowLeft className="h-3.5 w-3.5" /> All projects
       </Link>
 
-      <h1 className="mt-6 text-3xl font-semibold tracking-tight sm:text-4xl">{project.name}</h1>
-      <p className="text-muted mt-2">{project.tagline}</p>
-      <p className="text-muted mt-3 font-mono text-xs">
-        {project.year} · {project.stack.join(" · ")}
-      </p>
+      <header className="mt-6">
+        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">{project.name}</h1>
+        <p className="text-muted mt-2 text-lg">{project.tagline}</p>
 
-      <div className="mt-10 space-y-8">
-        {sections.map(({ key, label }) => (
-          <section key={key}>
-            <h2 className="text-accent text-sm font-medium">{label}</h2>
-            <p className="text-foreground/90 mt-2 text-sm leading-relaxed">
-              {cs[key as keyof typeof cs] as string}
-            </p>
-          </section>
-        ))}
+        <div className="mt-4 flex flex-wrap gap-1.5">
+          <Badge>{project.year}</Badge>
+          {project.stack.map((tech) => (
+            <Badge key={tech}>{tech}</Badge>
+          ))}
+        </div>
 
-        <section>
-          <h2 className="text-accent text-sm font-medium">Constraints</h2>
-          <ul className="text-foreground/90 mt-2 list-disc space-y-1 pl-5 text-sm">
-            {cs.constraints.map((c) => (
-              <li key={c}>{c}</li>
-            ))}
-          </ul>
-        </section>
+        {(project.repo || project.demo) && (
+          <div className="mt-5 flex flex-wrap gap-3">
+            {project.repo ? (
+              <ButtonAnchor href={project.repo} variant="secondary">
+                <GitHubIcon className="h-4 w-4" /> View repository
+              </ButtonAnchor>
+            ) : null}
+            {project.demo ? (
+              <ButtonAnchor href={project.demo} variant="secondary">
+                <ExternalLink className="h-4 w-4" /> Live demo
+              </ButtonAnchor>
+            ) : null}
+          </div>
+        )}
+      </header>
 
-        <section>
-          <h2 className="text-accent text-sm font-medium">Options considered</h2>
-          <ul className="text-foreground/90 mt-2 space-y-2 text-sm">
-            {cs.options.map((o) => (
-              <li key={o.option}>
-                <span className="font-medium">{o.option}</span> — {o.tradeoff}
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        <section>
-          <h2 className="text-accent text-sm font-medium">What this taught me</h2>
-          <ul className="text-foreground/90 mt-2 list-disc space-y-1 pl-5 text-sm">
-            {cs.learned.map((l) => (
-              <li key={l}>{l}</li>
-            ))}
-          </ul>
-        </section>
+      <div className="mt-8">
+        <CaseStudyBody cs={project.caseStudy} />
       </div>
 
-      <p className="text-muted mt-12 text-xs">
-        Scaffold rendering of the case-study schema. Challenges, code decisions, before/after,
-        diagrams, and screenshots come in Phase 1 / Phase 3.
-      </p>
-    </article>
+      {project.repo ? (
+        <div className="border-border bg-surface mt-10 rounded-lg border p-5">
+          <p className="text-foreground/90 text-sm">
+            This page explains the <em>why</em>. GitHub has the proof of what was built.
+          </p>
+          <ButtonAnchor href={project.repo} className="mt-3">
+            <GitHubIcon className="h-4 w-4" /> View full repository
+          </ButtonAnchor>
+        </div>
+      ) : null}
+
+      <nav className="border-border mt-12 flex items-stretch justify-between gap-4 border-t pt-6">
+        {prev ? (
+          <Link href={`/projects/${prev.slug}`} className="group max-w-[45%]">
+            <span className="text-muted inline-flex items-center gap-1 text-xs">
+              <ArrowLeft className="h-3 w-3" /> Previous
+            </span>
+            <span className="group-hover:text-accent mt-1 block text-sm font-medium">
+              {prev.name}
+            </span>
+          </Link>
+        ) : (
+          <span />
+        )}
+        {next ? (
+          <Link href={`/projects/${next.slug}`} className="group max-w-[45%] text-right">
+            <span className="text-muted inline-flex items-center gap-1 text-xs">
+              Next <ArrowRight className="h-3 w-3" />
+            </span>
+            <span className="group-hover:text-accent mt-1 block text-sm font-medium">
+              {next.name}
+            </span>
+          </Link>
+        ) : (
+          <span />
+        )}
+      </nav>
+    </Container>
   );
 }

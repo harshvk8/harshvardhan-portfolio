@@ -18,4 +18,21 @@ export function getProject(slug: string) {
   return projects.find((p) => p.slug === slug);
 }
 
-export type { Project, Experience, SkillCategory, Skill } from "./schema";
+/** Previous / next project in list order, wrapping around, for case-study nav. */
+export function getAdjacentProjects(slug: string) {
+  const i = projects.findIndex((p) => p.slug === slug);
+  if (i === -1) return { prev: undefined, next: undefined };
+  const prev = projects[(i - 1 + projects.length) % projects.length];
+  const next = projects[(i + 1) % projects.length];
+  return {
+    prev: prev.slug === slug ? undefined : prev,
+    next: next.slug === slug ? undefined : next,
+  };
+}
+
+/** Projects that list `skillName` in their stack, for the Skills screen. */
+export function projectsForSkill(slugs: readonly string[]) {
+  return projects.filter((p) => slugs.includes(p.slug));
+}
+
+export type { Project, CaseStudy, Challenge, Experience, SkillCategory, Skill } from "./schema";

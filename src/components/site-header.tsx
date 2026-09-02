@@ -18,25 +18,31 @@ export function SiteHeader() {
   return (
     <header className="border-border/60 bg-background/80 sticky top-0 z-50 border-b backdrop-blur">
       <div className="mx-auto flex h-14 w-full max-w-5xl items-center justify-between px-4 sm:px-6">
-        <Link href="/" className="font-mono text-sm font-semibold tracking-tight">
+        <Link
+          href="/"
+          className="font-mono text-sm font-semibold tracking-tight"
+          aria-label={`${siteConfig.name} — home`}
+        >
           {siteConfig.shortName}
           <span className="text-accent">.</span>
         </Link>
 
-        <nav className="hidden items-center gap-1 md:flex">
-          {siteConfig.nav.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              aria-current={isActive(pathname, item.href) ? "page" : undefined}
-              className={cn(
-                "text-muted hover:text-foreground rounded-md px-3 py-1.5 text-sm transition-colors",
-                isActive(pathname, item.href) && "text-foreground",
-              )}
-            >
-              {item.title}
-            </Link>
-          ))}
+        <nav aria-label="Primary" className="hidden items-center gap-1 md:flex">
+          {siteConfig.nav
+            .filter((item) => item.href !== "/")
+            .map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                aria-current={isActive(pathname, item.href) ? "page" : undefined}
+                className={cn(
+                  "text-muted hover:text-foreground rounded-md px-3 py-1.5 text-sm transition-colors",
+                  isActive(pathname, item.href) && "text-foreground",
+                )}
+              >
+                {item.title}
+              </Link>
+            ))}
         </nav>
 
         <button
@@ -51,7 +57,7 @@ export function SiteHeader() {
       </div>
 
       {open ? (
-        <nav className="border-border/60 bg-background border-t md:hidden">
+        <nav aria-label="Primary" className="border-border/60 bg-background border-t md:hidden">
           {siteConfig.nav.map((item) => (
             <Link
               key={item.href}
