@@ -25,7 +25,7 @@ export default function OgImage() {
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
         <div style={{ fontSize: 40, color: "#8b7cff" }}>{siteConfig.role}</div>
-        <div style={{ fontSize: 88, fontWeight: 600, lineHeight: 1.05 }}>{siteConfig.name}</div>
+        <div style={{ fontSize: 66, fontWeight: 600, lineHeight: 1.05 }}>{siteConfig.name}</div>
         <div style={{ fontSize: 30, color: "#99a2bd", maxWidth: 900 }}>{siteConfig.tagline}</div>
       </div>
       <div style={{ display: "flex", fontSize: 24, color: "#99a2bd" }}>

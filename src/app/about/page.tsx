@@ -1,13 +1,17 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { User } from "lucide-react";
 import { Container } from "@/components/container";
 import { ThinkingFlow } from "@/components/thinking-flow";
+import { publicFileExists } from "@/lib/assets";
 import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "About",
   description: `About ${siteConfig.name} — background, interests, and how I approach building software.`,
 };
+
+const PHOTO = "harshvardhan.jpg";
 
 const thinkingCopy: Record<string, string> = {
   Observe: "Notice the friction people actually live with, not the feature I want to build.",
@@ -19,15 +23,34 @@ const thinkingCopy: Record<string, string> = {
 };
 
 export default function AboutPage() {
+  const hasPhoto = publicFileExists(PHOTO);
+
   return (
     <Container className="py-16">
       <div className="grid gap-10 md:grid-cols-[200px_1fr]">
         <div>
-          <div className="border-border bg-surface text-muted flex aspect-square w-full items-center justify-center rounded-xl border">
-            <User className="h-10 w-10" aria-hidden="true" />
-            <span className="sr-only">Photo of {siteConfig.name}</span>
+          <div className="border-border bg-surface relative aspect-square w-full overflow-hidden rounded-xl border">
+            {hasPhoto ? (
+              <Image
+                src={`/${PHOTO}`}
+                alt={`Photo of ${siteConfig.name}`}
+                fill
+                sizes="200px"
+                className="object-cover"
+                priority
+              />
+            ) : (
+              <div className="text-muted flex h-full w-full items-center justify-center">
+                <User className="h-10 w-10" aria-hidden="true" />
+                <span className="sr-only">Photo of {siteConfig.name}</span>
+              </div>
+            )}
           </div>
-          <p className="text-muted mt-3 text-xs">{/* TODO: add /public photo */}Photo coming</p>
+          {!hasPhoto ? (
+            <p className="text-muted mt-3 text-xs">
+              Add <code>public/{PHOTO}</code>
+            </p>
+          ) : null}
         </div>
 
         <div>
@@ -51,7 +74,9 @@ export default function AboutPage() {
               <dd className="text-foreground/90 mt-1 text-sm">
                 {siteConfig.education.degree}
                 <br />
-                {siteConfig.education.institution} · {siteConfig.education.period}
+                {siteConfig.education.institution}, {siteConfig.education.location}
+                <br />
+                {siteConfig.education.period}
               </dd>
             </div>
             <div>
@@ -59,6 +84,15 @@ export default function AboutPage() {
               <dd className="text-foreground/90 mt-1 text-sm">{siteConfig.currently}</dd>
             </div>
           </dl>
+
+          <div className="mt-6">
+            <p className="text-muted font-mono text-xs tracking-widest uppercase">
+              Relevant coursework
+            </p>
+            <p className="text-foreground/90 mt-1 text-sm">
+              {siteConfig.education.coursework.join(" · ")}
+            </p>
+          </div>
         </div>
       </div>
 
