@@ -1,11 +1,6 @@
 import type { ExperienceInput } from "./schema";
 
-/**
- * Handshake AI is real (résumé). The second entry is a STUB — you said you
- * have another current job that isn't on the résumé. Fill in title, company,
- * dates, bullets, and the "learned" line, or delete it.
- * The "learned" line on Handshake AI is a DRAFT — make it yours.
- */
+/** Real roles. */
 export const experienceData: ExperienceInput[] = [
   {
     role: "Annotator — Project Hedgehog",
@@ -19,15 +14,21 @@ export const experienceData: ExperienceInput[] = [
       "Applied structured evaluation methods to support model performance improvement",
     ],
     learned:
-      "Draft: seeing where models fail up close changed how I read AI output in my own projects — the useful move is deciding what 'correct' means first and applying it the same way every time, not judging case by case.",
+      "Evaluating AI responses changed the way I look at software output. I became more deliberate about edge cases, consistency, and whether a result is actually correct rather than just looking correct — and it reinforced the value of clear evaluation criteria over intuition.",
   },
   {
-    role: "TODO: job title",
-    org: "TODO: company",
-    start: "TODO",
+    role: "CGO Coordinator",
+    org: "ShopRite",
+    start: "Oct 2024",
     end: "Present",
-    summary: "TODO: one or two sentences on what the role involves.",
-    responsibilities: ["TODO: a concrete responsibility", "TODO: another one"],
-    learned: "TODO: what this role has taught you.",
+    summary:
+      "Managing inventory accuracy, product availability, and day-to-day store operations in a fast-paced environment.",
+    responsibilities: [
+      "Help manage inventory accuracy, product availability, and day-to-day store operations",
+      "Investigate inventory and stocking discrepancies and coordinate with team members to keep product information accurate",
+      "Balance operational responsibilities with customer-facing problem solving and shifting priorities",
+    ],
+    learned:
+      "It taught me to catch small inconsistencies before they become larger problems, communicate with different kinds of people, and stay organized when several things need attention at once.",
   },
 ];

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, ExternalLink } from "lucide-react";
@@ -6,6 +7,7 @@ import { Container } from "@/components/container";
 import { Badge } from "@/components/badge";
 import { ButtonAnchor } from "@/components/button-link";
 import { CaseStudyBody } from "@/components/case-study";
+import { CaseStudyBackLink } from "@/components/case-study-back-link";
 import { GitHubIcon } from "@/components/icons";
 import { getAdjacentProjects, getProject, projects } from "@/content";
 import { siteConfig } from "@/lib/site";
@@ -41,12 +43,15 @@ export default async function ProjectPage({ params }: PageProps<"/projects/[slug
 
   return (
     <Container width="prose" className="py-16">
-      <Link
-        href="/projects"
-        className="text-muted hover:text-foreground inline-flex items-center gap-1.5 text-sm"
+      <Suspense
+        fallback={
+          <span className="text-muted inline-flex items-center gap-1.5 text-sm">
+            <ArrowLeft className="h-3.5 w-3.5" /> All projects
+          </span>
+        }
       >
-        <ArrowLeft className="h-3.5 w-3.5" /> All projects
-      </Link>
+        <CaseStudyBackLink />
+      </Suspense>
 
       <header className="mt-6">
         <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">{project.name}</h1>
