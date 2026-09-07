@@ -66,40 +66,66 @@ export const projectSchema = z.object({
   caseStudy: caseStudySchema,
 });
 
+/**
+ * A stage in the experience "journey" — a place that changed how I work,
+ * not just a résumé row. `kind: "projects"` is the builder stage (no job
+ * title); everything else is a real role.
+ */
 export const experienceSchema = z.object({
-  role: z.string(),
   org: z.string(),
-  start: z.string(),
-  end: z.string(),
-  summary: z.string(),
-  responsibilities: z.array(z.string()).min(1),
-  /** What this experience taught me. */
-  learned: z.string(),
-});
-
-export const skillSchema = z.object({
-  name: z.string(),
-  level: z.enum(["learning", "proficient", "strong"]).optional(),
-  /** Slugs of projects where this skill was actually used. */
+  role: z.string().optional(),
+  period: z.string(),
+  kind: z.enum(["work", "projects"]).default("work"),
+  /** one- or two-word theme, e.g. "People + operations" */
+  theme: z.string(),
+  /** what I developed there */
+  developed: z.array(z.string()).min(1),
+  /** the story, first person */
+  story: z.string(),
+  /** project slugs, for the builder stage */
   projects: z.array(z.string()).default([]),
 });
 
-export const skillCategorySchema = z.object({
-  category: z.string(),
+// --- Skills: five constellations, evidence not percentages ---
+
+export const skillSize = z.enum(["xl", "lg", "md", "sm"]);
+
+export const skillSchema = z.object({
+  id: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
+  name: z.string(),
+  size: skillSize,
+  /** constellation anchor star */
+  anchor: z.boolean().default(false),
+  /** "Used in / for" lines — concrete, not proficiency claims */
+  evidence: z.array(z.string()).min(1),
+  /** project slugs to link from the detail card */
+  projects: z.array(z.string()).default([]),
+});
+
+export const constellationSchema = z.object({
+  id: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
+  name: z.string(),
+  /** the largest / central constellation */
+  primary: z.boolean().default(false),
+  /** relative visual scale (C5 is smaller) */
+  scale: z.number().default(1),
+  description: z.string(),
   skills: z.array(skillSchema).min(1),
 });
+
+/** cross-constellation connecting paths, by skill id */
+export const skillConnectionSchema = z.tuple([z.string(), z.string()]);
 
 // Parsed / output types — what components consume.
 export type Project = z.infer<typeof projectSchema>;
 export type CaseStudy = z.infer<typeof caseStudySchema>;
 export type Challenge = z.infer<typeof challengeSchema>;
 export type Experience = z.infer<typeof experienceSchema>;
-export type SkillCategory = z.infer<typeof skillCategorySchema>;
 export type Skill = z.infer<typeof skillSchema>;
+export type Constellation = z.infer<typeof constellationSchema>;
+export type SkillConnection = z.infer<typeof skillConnectionSchema>;
 
-// Input types — what the content files are authored as. Fields with a
-// schema `.default([])` are optional here (e.g. a project with no
-// challenges/beforeAfter yet).
+// Input types — what the content files are authored as.
 export type ProjectInput = z.input<typeof projectSchema>;
 export type ExperienceInput = z.input<typeof experienceSchema>;
-export type SkillCategoryInput = z.input<typeof skillCategorySchema>;
+export type ConstellationInput = z.input<typeof constellationSchema>;

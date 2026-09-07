@@ -1,34 +1,77 @@
 import type { ExperienceInput } from "./schema";
 
-/** Real roles. */
+/**
+ * Experience as a journey through environments that changed how I work —
+ * ordered thematically toward "builder", not as a strict résumé timeline.
+ */
 export const experienceData: ExperienceInput[] = [
   {
-    role: "Annotator — Project Hedgehog",
-    org: "Handshake AI",
-    start: "Jan 2026",
-    end: "Present",
-    summary: "Remote. Evaluating model responses and annotating datasets used to train ML models.",
-    responsibilities: [
-      "Evaluated AI model responses and annotated datasets used for machine learning model training",
-      "Identified inconsistencies in model outputs to improve dataset quality and system reliability",
-      "Applied structured evaluation methods to support model performance improvement",
+    org: "ShopRite",
+    role: "CGO Coordinator",
+    period: "Oct 2024 – Present",
+    kind: "work",
+    theme: "People + operations",
+    developed: [
+      "Communication",
+      "Customer service",
+      "Team collaboration",
+      "Problem solving",
+      "Attention to operational detail",
     ],
-    learned:
-      "Evaluating AI responses changed the way I look at software output. I became more deliberate about edge cases, consistency, and whether a result is actually correct rather than just looking correct — and it reinforced the value of clear evaluation criteria over intuition.",
+    story:
+      "Working in a fast-moving retail environment taught me how to communicate with different people, handle multiple priorities, and solve problems while operations continue around me.",
   },
   {
-    role: "CGO Coordinator",
-    org: "ShopRite",
-    start: "Oct 2024",
-    end: "Present",
-    summary:
-      "Managing inventory accuracy, product availability, and day-to-day store operations in a fast-paced environment.",
-    responsibilities: [
-      "Help manage inventory accuracy, product availability, and day-to-day store operations",
-      "Investigate inventory and stocking discrepancies and coordinate with team members to keep product information accurate",
-      "Balance operational responsibilities with customer-facing problem solving and shifting priorities",
+    org: "Handshake AI — Project Hedgehog",
+    role: "Annotator",
+    period: "Jan 2026 – Present",
+    kind: "work",
+    theme: "Evaluation + precision",
+    developed: [
+      "AI model evaluation",
+      "Quality assurance",
+      "Data annotation",
+      "Analytical thinking",
+      "Attention to detail",
     ],
-    learned:
-      "It taught me to catch small inconsistencies before they become larger problems, communicate with different kinds of people, and stay organized when several things need attention at once.",
+    story:
+      "Evaluating model responses made me more systematic about correctness, consistency, and edge cases — using defined criteria instead of assuming an output is correct because it looks plausible.",
+  },
+  {
+    org: "Montclair State University",
+    role: "IT Support Analyst",
+    period: "2025 – Present",
+    kind: "work",
+    theme: "Systems + troubleshooting",
+    developed: [
+      "Troubleshooting",
+      "Technical support",
+      "Information technology",
+      "Networking",
+      "Problem solving",
+      "Communication",
+    ],
+    story:
+      "IT support taught me to diagnose problems from incomplete information, communicate technical steps to non-technical users, and tell symptoms apart from the actual cause of a problem.",
+  },
+  {
+    org: "Software & Research Projects",
+    period: "2024 – Present",
+    kind: "projects",
+    theme: "Builder",
+    developed: [
+      "System design",
+      "Architectural decisions",
+      "Full-stack and mobile development",
+      "Working from a problem, not a spec",
+    ],
+    story:
+      "Moving from solving individual technical problems to designing complete systems — choosing the data model, the trust boundary, the platform — and living with those decisions as the projects grew.",
+    projects: [
+      "red-hawk-wallet-flutter",
+      "red-hawk-wallet-android",
+      "scheduleai",
+      "goplus-research",
+    ],
   },
 ];
