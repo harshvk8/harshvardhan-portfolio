@@ -12,8 +12,10 @@ export const siteConfig = {
     "Computer Science student who turns everyday problems into systems I can test, simplify, and improve.",
   description:
     "Portfolio of Harshvardhan Kumar Nimesh — a Computer Science student at Montclair State University and software developer. See how I notice problems, reason through them, make engineering decisions, and build.",
-  // Overridden per-environment by NEXT_PUBLIC_SITE_URL; this is the fallback.
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://harshvardhan-portfolio.vercel.app",
+  // Overridden per-environment by NEXT_PUBLIC_SITE_URL; `||` so an empty
+  // value (e.g. a blank Vercel env var) still falls back instead of
+  // producing `new URL("")`.
+  url: process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://harshvardhan-portfolio.vercel.app",
   locale: "en_US",
 
   email: "harshvk8240@gmail.com",
