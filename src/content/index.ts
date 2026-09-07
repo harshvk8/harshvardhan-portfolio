@@ -35,4 +35,7 @@ export function projectsForSkill(slugs: readonly string[]) {
   return projects.filter((p) => slugs.includes(p.slug));
 }
 
+export { certificates } from "./certificates";
+export type { Certificate } from "./certificates";
+
 export type { Project, CaseStudy, Challenge, Experience, SkillCategory, Skill } from "./schema";
