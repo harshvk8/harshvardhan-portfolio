@@ -3,7 +3,7 @@ import { Download, FileText } from "lucide-react";
 import { Container } from "@/components/container";
 import { ButtonAnchor } from "@/components/button-link";
 import { publicFileExists } from "@/lib/assets";
-import { experience, skills } from "@/content";
+import { constellations, experience } from "@/content";
 import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -13,8 +13,10 @@ export const metadata: Metadata = {
 
 export default function ResumePage() {
   const hasResume = publicFileExists("resume.pdf");
-  const topSkills = skills.flatMap((g) => g.skills).filter((s) => s.level === "strong");
-  const realRoles = experience.filter((e) => !e.org.startsWith("TODO"));
+  const topSkills = constellations
+    .flatMap((c) => c.skills)
+    .filter((s) => s.size === "xl" || s.size === "lg");
+  const realRoles = experience.filter((e) => e.kind === "work");
 
   return (
     <Container width="prose" className="py-16">

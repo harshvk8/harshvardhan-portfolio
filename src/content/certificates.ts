@@ -11,9 +11,12 @@ export const certificateSchema = z.object({
 export type Certificate = z.infer<typeof certificateSchema>;
 
 /**
- * None yet. The universe renders a decorative asteroid belt regardless;
- * once this has entries, each asteroid becomes a clickable certificate
- * (name, issuer, date, related skills, credential link).
+ * Intentionally empty for now. The universe's asteroid belt is a background
+ * element labelled "Additional learning" — it suggests that certifications
+ * and extra study exist outside the main project universe, but it is NOT
+ * clickable. This is deliberate, not an unfinished feature. When this list
+ * has real entries, the belt becomes interactive (name, issuer, date,
+ * related skills, credential link).
  */
 export const certificatesData: z.input<typeof certificateSchema>[] = [];
 

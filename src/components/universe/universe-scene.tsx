@@ -2,7 +2,7 @@
 
 import { Suspense, useState } from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Stars } from "@react-three/drei";
+import { Html, OrbitControls, Stars } from "@react-three/drei";
 import { Bloom, EffectComposer } from "@react-three/postprocessing";
 import * as THREE from "three";
 import type { PlanetConfig } from "@/lib/universe";
@@ -76,6 +76,14 @@ export default function UniverseScene({
           outer={beltInner + 2.2}
           reducedMotion={reducedMotion}
         />
+
+        {/* the belt is background only — certifications / extra learning
+            orbit outside the main project universe, not clickable (yet) */}
+        <Html center position={[0, 0.6, beltInner + 3]} distanceFactor={18} zIndexRange={[4, 0]}>
+          <p className="text-muted/60 pointer-events-none font-mono text-[9px] tracking-[0.25em] uppercase select-none">
+            Additional learning
+          </p>
+        </Html>
       </Suspense>
 
       <EffectComposer>

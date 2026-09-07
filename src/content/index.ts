@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { experienceSchema, projectSchema, skillCategorySchema } from "./schema";
+import { constellationSchema, experienceSchema, projectSchema } from "./schema";
 import { projectsData } from "./projects";
 import { experienceData } from "./experience";
-import { skillsData } from "./skills";
+import { constellationsData, skillConnections } from "./skills";
 
 /**
  * Parse content once, at module load. Any schema violation throws here and
@@ -10,7 +10,9 @@ import { skillsData } from "./skills";
  */
 export const projects = z.array(projectSchema).parse(projectsData);
 export const experience = z.array(experienceSchema).parse(experienceData);
-export const skills = z.array(skillCategorySchema).parse(skillsData);
+export const constellations = z.array(constellationSchema).parse(constellationsData);
+
+export { skillConnections };
 
 export const featuredProjects = projects.filter((p) => p.featured);
 
@@ -30,12 +32,25 @@ export function getAdjacentProjects(slug: string) {
   };
 }
 
-/** Projects that list `skillName` in their stack, for the Skills screen. */
-export function projectsForSkill(slugs: readonly string[]) {
-  return projects.filter((p) => slugs.includes(p.slug));
+// --- skills helpers ---
+
+export const allSkills = constellations.flatMap((c) =>
+  c.skills.map((s) => ({ ...s, constellationId: c.id, constellationName: c.name })),
+);
+
+export function getSkill(id: string) {
+  return allSkills.find((s) => s.id === id);
 }
 
 export { certificates } from "./certificates";
 export type { Certificate } from "./certificates";
 
-export type { Project, CaseStudy, Challenge, Experience, SkillCategory, Skill } from "./schema";
+export type {
+  Project,
+  CaseStudy,
+  Challenge,
+  Experience,
+  Skill,
+  Constellation,
+  SkillConnection,
+} from "./schema";

@@ -99,6 +99,21 @@
       background-position: 420px 420px;
     }
   }
+
+  /* faint background stars on the skills constellation map */
+  .constellation-twinkle {
+    animation: constellation-twinkle 4.5s ease-in-out infinite;
+  }
+
+  @keyframes constellation-twinkle {
+    0%,
+    100% {
+      opacity: 0.18;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
