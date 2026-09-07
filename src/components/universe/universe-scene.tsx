@@ -14,12 +14,18 @@ export default function UniverseScene({
   planets,
   reducedMotion,
   enteringSlug,
+  entering,
   onEnter,
+  onOpenAbout,
 }: {
   planets: PlanetConfig[];
   reducedMotion: boolean;
+  /** slug of the project being entered (null for About / none) */
   enteringSlug: string | null;
+  /** any transition in progress */
+  entering: boolean;
   onEnter: (slug: string) => void;
+  onOpenAbout: () => void;
 }) {
   const [target, setTarget] = useState<THREE.Vector3 | null>(null);
   const beltInner = planets.length ? planets[planets.length - 1].radius + 2.4 : 14;
@@ -45,7 +51,7 @@ export default function UniverseScene({
           speed={reducedMotion ? 0 : 0.35}
         />
 
-        <Sun reducedMotion={reducedMotion} />
+        <Sun reducedMotion={reducedMotion} onOpenAbout={onOpenAbout} />
 
         {planets.map((config) => (
           <OrbitRing key={`ring-${config.project.slug}`} radius={config.radius} />
@@ -86,7 +92,7 @@ export default function UniverseScene({
         maxDistance={30}
         minPolarAngle={Math.PI * 0.12}
         maxPolarAngle={Math.PI * 0.58}
-        autoRotate={!reducedMotion && !enteringSlug}
+        autoRotate={!reducedMotion && !entering}
         autoRotateSpeed={0.12}
       />
     </Canvas>

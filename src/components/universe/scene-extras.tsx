@@ -96,7 +96,7 @@ export function CameraRig({ target }: { target: THREE.Vector3 | null }) {
     if (controls) controls.enabled = false;
     desired.copy(target).multiplyScalar(1.32);
     desired.y += 1.3;
-    camera.position.lerp(desired, 0.09);
+    camera.position.lerp(desired, 0.045);
     camera.lookAt(target);
   });
 
