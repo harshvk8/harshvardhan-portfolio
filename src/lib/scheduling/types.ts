@@ -32,6 +32,8 @@ export type MeetingSlot = {
   durationMin: number;
   /** Human label in the host's timezone, e.g. "Wed, Sep 9 · 4:00–4:30 PM ET". */
   label: string;
+  /** Optional per-window tag, e.g. "remote / audio". */
+  note?: string;
 };
 
 export type ScheduleChatRequest = {

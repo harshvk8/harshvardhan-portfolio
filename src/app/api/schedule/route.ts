@@ -2,7 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { NextResponse, type NextRequest } from "next/server";
 import { schedulingConfig } from "@/content/scheduling";
 import { chatLimiter, dayLimiter, getIp, withinLimits } from "@/lib/ratelimit";
-import { filterSlots, generateSlots } from "@/lib/scheduling/slots";
+import { describeAvailability, filterSlots, generateSlots } from "@/lib/scheduling/slots";
 import type { ChatTurn, MeetingConstraints, ScheduleChatResponse } from "@/lib/scheduling/types";
 
 /** Recruiter-facing scheduling chat. The model turns the conversation into
@@ -105,19 +105,28 @@ function systemPrompt(): string {
     "",
     `Today is ${todayLabel} (${todayISO}). Harshvardhan's timezone is ${schedulingConfig.timezone} (${schedulingConfig.timezoneLabel}).`,
     "",
+    "His weekly availability (he is busy — classes and two IT jobs — at every other time):",
+    describeAvailability(schedulingConfig),
+    schedulingConfig.notes ? `\nContext: ${schedulingConfig.notes}` : "",
+    "",
     "Rules:",
     "1. Replies are 1–2 sentences. Warm, direct, action-oriented. No bullet lists, no filler.",
     "2. Always call propose_meeting_slots. Your job is to extract constraints and write the reply.",
-    "3. You do NOT have his calendar. Never state, guess, or imply specific open times — the app",
-    "   generates real slots from his availability and shows them as buttons under your reply.",
-    "4. Move toward times fast. Any hint of timing ('next week', 'Tuesday', 'mornings') is enough —",
+    "3. Never state, guess, or invent a specific open time — the app generates real slots from the",
+    "   availability above and shows them as buttons under your reply. You MAY describe the",
+    "   availability in general terms (e.g. 'Wednesdays only work in the evening').",
+    "4. If they ask about a specific day: tell them his open window(s) that day from the list above,",
+    "   or if that day has none, say he's booked that day (classes / work) and offer the nearest days.",
+    "5. Move toward times fast. Any hint of timing ('next week', 'Tuesday', 'mornings') is enough —",
     "   set showingSlots true and say you're pulling up times.",
-    "5. To CONFIRM, the app needs the visitor's name and email. Mention this only when they're about",
+    "6. To CONFIRM, the app needs the visitor's name and email. Mention this only when they're about",
     "   to pick a slot — not earlier. They can browse times without giving anything.",
-    "6. If asked what's required: name and email to confirm; nothing to look at times.",
-    "7. Politely decline anything that isn't about scheduling this call.",
-    "8. Every tool field is plain text — no XML, tags, or markup inside any value.",
-  ].join("\n");
+    "7. If asked what's required: name and email to confirm; nothing to look at times.",
+    "8. Politely decline anything that isn't about scheduling this call.",
+    "9. Every tool field is plain text — no XML, tags, or markup inside any value.",
+  ]
+    .filter(Boolean)
+    .join("\n");
 }
 
 /** Strip any tool-call / XML markup a model may bleed into a string field. */
@@ -191,11 +200,15 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     const block = response.content.find((c): c is Anthropic.ToolUseBlock => c.type === "tool_use");
     if (block) {
       const input = block.input as Record<string, unknown>;
-      const isoDate = (v: unknown) => (typeof v === "string" && /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : "");
+      const isoDate = (v: unknown) =>
+        typeof v === "string" && /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : "";
       toolInput = {
         reply: cleanText(input.reply, 600),
         preferredDays: Array.isArray(input.preferredDays)
-          ? input.preferredDays.map((d) => cleanText(d, 20)).filter(Boolean).slice(0, 7)
+          ? input.preferredDays
+              .map((d) => cleanText(d, 20))
+              .filter(Boolean)
+              .slice(0, 7)
           : [],
         timeOfDay: Array.isArray(input.timeOfDay)
           ? (input.timeOfDay.filter(

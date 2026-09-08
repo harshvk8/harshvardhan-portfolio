@@ -239,6 +239,7 @@ export function Scheduler() {
                         )}
                       >
                         {s.label} · {s.durationMin} min
+                        {s.note ? ` · ${s.note}` : ""}
                       </button>
                     );
                   })}

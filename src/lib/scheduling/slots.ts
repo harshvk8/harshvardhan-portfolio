@@ -92,6 +92,36 @@ function labelFor(config: SchedulingConfig, start: Date, end: Date): string {
   return `${day} · ${t(start)}–${t(end)} ${config.timezoneLabel}`;
 }
 
+const WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+function fmtMinutes(min: number): string {
+  const h24 = Math.floor(min / 60);
+  const m = min % 60;
+  const period = h24 >= 12 ? "PM" : "AM";
+  const h12 = h24 % 12 === 0 ? 12 : h24 % 12;
+  return `${h12}:${String(m).padStart(2, "0")} ${period}`;
+}
+
+/**
+ * Plain-English weekly availability, for the assistant's system prompt so it
+ * can answer "what about Thursday?" without guessing. Not shown to visitors
+ * directly — the assistant paraphrases it.
+ */
+export function describeAvailability(config: SchedulingConfig): string {
+  return [1, 2, 3, 4, 5, 6, 0]
+    .map((day) => {
+      const windows = config.weekly
+        .filter((w) => w.day === day)
+        .sort((a, b) => parseHHMM(a.start) - parseHHMM(b.start))
+        .map((w) => {
+          const span = `${fmtMinutes(parseHHMM(w.start))}–${fmtMinutes(parseHHMM(w.end))}`;
+          return w.note ? `${span} (${w.note})` : span;
+        });
+      return `${WEEKDAYS[day]}: ${windows.length ? windows.join(", ") : "not available"}`;
+    })
+    .join("\n");
+}
+
 /** Every bookable slot from `now` to the end of the horizon. */
 export function generateSlots(config: SchedulingConfig, now: Date): MeetingSlot[] {
   const earliest = now.getTime() + config.leadTimeHours * 3_600_000;
@@ -128,6 +158,7 @@ export function generateSlots(config: SchedulingConfig, now: Date): MeetingSlot[
             endISO: end.toISOString(),
             durationMin,
             label: labelFor(config, start, end),
+            note: w.note,
           });
         }
       }

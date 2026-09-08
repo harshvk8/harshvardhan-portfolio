@@ -151,11 +151,12 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
   const start = new Date(slot.startISO);
   const end = new Date(slot.endISO);
-  const notified = await notify({ name, email, note, slotLabel: slot.label, start, end });
+  const slotLabel = slot.note ? `${slot.label} · ${slot.note}` : slot.label;
+  const notified = await notify({ name, email, note, slotLabel, start, end });
 
   const payload: ScheduleConfirmResponse = {
     ok: true,
-    slotLabel: slot.label,
+    slotLabel,
     calendar: {
       googleUrl: googleUrl(start, end, name),
       ics: buildIcs(start, end, name, email, note),
