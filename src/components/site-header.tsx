@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Menu, Sparkles, X, Zap } from "lucide-react";
-import { useMode } from "@/components/mode/mode-provider";
+import { useMode, type Mode } from "@/components/mode/mode-provider";
 import { siteConfig } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
@@ -14,9 +14,19 @@ function isActive(pathname: string, href: string) {
 
 function ModeToggle() {
   const { mode, setMode, ready } = useMode();
+  const router = useRouter();
+  const pathname = usePathname();
 
   // reserve the space so the header doesn't jump when it mounts
   if (!ready) return <div aria-hidden className="h-8 w-[10.5rem]" />;
+
+  // Switching mode is the gateway to the two home experiences (the 3D
+  // universe vs. the plain recruiter layout), so send the visitor home
+  // from any inner page — otherwise the toggle looks like it did nothing.
+  function choose(next: Mode) {
+    setMode(next);
+    if (pathname !== "/") router.push("/");
+  }
 
   return (
     <div
@@ -26,7 +36,7 @@ function ModeToggle() {
     >
       <button
         type="button"
-        onClick={() => setMode("explore")}
+        onClick={() => choose("explore")}
         aria-pressed={mode === "explore"}
         className={cn(
           "inline-flex items-center gap-1 rounded px-2 py-1 transition-colors",
@@ -37,7 +47,7 @@ function ModeToggle() {
       </button>
       <button
         type="button"
-        onClick={() => setMode("recruiter")}
+        onClick={() => choose("recruiter")}
         aria-pressed={mode === "recruiter"}
         className={cn(
           "inline-flex items-center gap-1 rounded px-2 py-1 transition-colors",
