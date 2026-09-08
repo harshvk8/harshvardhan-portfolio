@@ -233,6 +233,7 @@ export const projectsData: ProjectInput[] = [
     stack: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Node.js", "Firebase"],
     repo: "https://github.com/harshvk8/ScheduleAi",
     demo: "https://schedule-ai-eta.vercel.app",
+    embedDemo: "https://schedule-ai-eta.vercel.app",
     caseStudy: {
       problem:
         "Every semester, students rebuild a timetable by hand: preferred times, which professor, no clashes, requirements met. It's a constraint problem solved with a spreadsheet and trial and error, and one missed conflict often isn't caught until it's too late to change sections.",
@@ -268,7 +269,7 @@ export const projectsData: ProjectInput[] = [
       learned: [
         "Building and deploying it pushed me to separate the conversational experience from the rules that decide whether a schedule is valid. Input validation and conflict detection have to stay predictable even if a model is eventually doing the understanding.",
         "Deployment made configuration, failure states, and validation matter far more than they do when an app only runs locally.",
-        "Planned for Phase 3, not yet built: connect ScheduleAI to this portfolio's contact page so a recruiter can talk through meeting times before sharing personal contact details — a model handles the conversation, the scheduling logic stays responsible for checking availability and conflicts.",
+        "This portfolio's Contact page now runs a scheduling assistant built on the same split: Claude Sonnet turns a recruiter's message into constraints, and a deterministic engine generates real meeting slots from my availability and re-validates the chosen one on confirm. The model never invents a time — same principle as ScheduleAI, narrowed to booking one call.",
       ],
     },
   },

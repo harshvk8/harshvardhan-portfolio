@@ -8,6 +8,7 @@ import { Badge } from "@/components/badge";
 import { ButtonAnchor } from "@/components/button-link";
 import { CaseStudyBody } from "@/components/case-study";
 import { CaseStudyBackLink } from "@/components/case-study-back-link";
+import { ProjectEmbed } from "@/components/project-embed";
 import { GitHubIcon } from "@/components/icons";
 import { getAdjacentProjects, getProject, projects } from "@/content";
 import { siteConfig } from "@/lib/site";
@@ -83,6 +84,14 @@ export default async function ProjectPage({ params }: PageProps<"/projects/[slug
       <div className="mt-8">
         <CaseStudyBody cs={project.caseStudy} />
       </div>
+
+      {project.embedDemo ? (
+        <ProjectEmbed
+          src={project.embedDemo}
+          title={`${project.name} — live app`}
+          blurb="The deployed app, running here. Talk to the assistant and build a timetable — no sign-in to look around."
+        />
+      ) : null}
 
       {project.repo ? (
         <div className="border-border bg-surface mt-10 rounded-lg border p-5">
