@@ -59,6 +59,8 @@ export type ScheduleConfirmRequest = {
   slot: { startISO: string; endISO: string };
   name: string;
   email: string;
+  /** Optional direct or business phone number. */
+  phone?: string;
   note?: string;
 };
 

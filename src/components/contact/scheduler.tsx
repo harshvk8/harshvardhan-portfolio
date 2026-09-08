@@ -39,6 +39,7 @@ export function Scheduler() {
   const [selected, setSelected] = useState<MeetingSlot | null>(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [note, setNote] = useState("");
   const [confirming, setConfirming] = useState(false);
   const [result, setResult] = useState<ScheduleConfirmResponse | null>(null);
@@ -105,6 +106,7 @@ export function Scheduler() {
           slot: { startISO: selected.startISO, endISO: selected.endISO },
           name,
           email,
+          phone,
           note,
         }),
       });
@@ -291,6 +293,17 @@ export function Scheduler() {
               />
             </label>
           </div>
+          <label className="mt-2 block">
+            <span className="sr-only">Phone number</span>
+            <input
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="Phone or business number (optional)"
+              type="tel"
+              autoComplete="tel"
+              className="border-border bg-background focus:border-accent w-full rounded-md border px-3 py-2 text-sm outline-none"
+            />
+          </label>
           <label className="mt-2 block">
             <span className="sr-only">Anything to add</span>
             <input
