@@ -61,6 +61,12 @@ export const projectSchema = z.object({
   stack: z.array(z.string()).min(1),
   repo: z.string().url().optional(),
   demo: z.string().url().optional(),
+  /**
+   * When set, the case-study page embeds the live app in an iframe so a
+   * visitor can try it in place. Must be the same origin as `demo` (or
+   * `demo` itself). Use only for apps that allow being framed.
+   */
+  embedDemo: z.string().url().optional(),
   /** Path under /public, e.g. "/images/projects/foo.png". */
   cover: z.string().optional(),
   caseStudy: caseStudySchema,

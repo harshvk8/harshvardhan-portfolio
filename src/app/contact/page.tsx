@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Mail } from "lucide-react";
 import { Container } from "@/components/container";
+import { Scheduler } from "@/components/contact/scheduler";
 import { GitHubIcon, LinkedInIcon } from "@/components/icons";
 import { siteConfig } from "@/lib/site";
 
@@ -58,11 +59,7 @@ export default function ContactPage() {
         })}
       </ul>
 
-      <p className="border-border text-muted mt-8 rounded-lg border border-dashed p-4 text-sm">
-        <span className="text-accent font-mono text-xs">Coming in Phase 3 — </span>
-        an AI scheduling assistant here, so you can find a meeting slot in a short back-and-forth
-        instead of an email thread. It will always say up front what it needs to confirm a meeting.
-      </p>
+      <Scheduler />
     </Container>
   );
 }
