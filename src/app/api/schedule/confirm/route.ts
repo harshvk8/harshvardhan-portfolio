@@ -123,7 +123,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   }
 
   const b = body as {
-    slot?: { startISO?: unknown };
+    slot?: { startISO?: unknown; endISO?: unknown };
     name?: unknown;
     email?: unknown;
     note?: unknown;
@@ -132,6 +132,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   const email = typeof b.email === "string" ? b.email.trim() : "";
   const note = typeof b.note === "string" ? b.note.trim().slice(0, 1000) : "";
   const startISO = typeof b.slot?.startISO === "string" ? b.slot.startISO : "";
+  const endISO = typeof b.slot?.endISO === "string" ? b.slot.endISO : undefined;
 
   if (name.length < 2 || name.length > 100) {
     return NextResponse.json({ error: "Please enter your name." }, { status: 400 });
@@ -140,7 +141,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: "Please enter a valid email address." }, { status: 400 });
   }
 
-  const slot = findBookableSlot(schedulingConfig, new Date(), startISO);
+  const slot = findBookableSlot(schedulingConfig, new Date(), startISO, endISO);
   if (!slot) {
     return NextResponse.json(
       { error: "That time is no longer available. Pick another slot." },

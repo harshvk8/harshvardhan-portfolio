@@ -235,15 +235,25 @@ function dedupeByStart(slots: MeetingSlot[]): MeetingSlot[] {
 }
 
 /**
- * Re-derive slots and confirm `startISO` is a real, still-bookable slot.
- * Called on the confirm path so a tampered or stale slot is rejected.
+ * Re-derive slots and confirm the requested one is real and still bookable.
+ * Called on the confirm path so a tampered or stale slot is rejected. When
+ * `endISO` is given it must match too (a start can carry several durations).
  */
 export function findBookableSlot(
   config: SchedulingConfig,
   now: Date,
   startISO: string,
+  endISO?: string,
 ): MeetingSlot | null {
   const start = new Date(startISO);
   if (Number.isNaN(start.getTime())) return null;
-  return generateSlots(config, now).find((s) => s.startISO === start.toISOString()) ?? null;
+  const wantStart = start.toISOString();
+  const wantEnd = endISO ? new Date(endISO).toISOString() : null;
+  const matches = generateSlots(config, now).filter((s) => s.startISO === wantStart);
+  if (matches.length === 0) return null;
+  if (wantEnd && wantEnd !== "Invalid Date") {
+    return matches.find((s) => s.endISO === wantEnd) ?? null;
+  }
+  // No end given: prefer the default (first configured) duration.
+  return matches.find((s) => s.durationMin === config.durationsMin[0]) ?? matches[0];
 }

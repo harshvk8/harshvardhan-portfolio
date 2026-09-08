@@ -116,7 +116,19 @@ function systemPrompt(): string {
     "   to pick a slot — not earlier. They can browse times without giving anything.",
     "6. If asked what's required: name and email to confirm; nothing to look at times.",
     "7. Politely decline anything that isn't about scheduling this call.",
+    "8. Every tool field is plain text — no XML, tags, or markup inside any value.",
   ].join("\n");
+}
+
+/** Strip any tool-call / XML markup a model may bleed into a string field. */
+function cleanText(v: unknown, max = 400): string {
+  if (typeof v !== "string") return "";
+  return v
+    .replace(/<\/?[a-z_][^>]*>/gi, " ")
+    .replace(/<\/?(?:antml|parameter|invoke|function)[^]*$/i, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, max);
 }
 
 function sanitizeTurns(raw: unknown): ChatTurn[] | null {
@@ -169,7 +181,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     const response = await client.messages.create({
       model: MODEL,
       max_tokens: 800,
-      output_config: { effort: "low" },
+      output_config: { effort: "medium" },
       system: systemPrompt(),
       tools: [TOOL],
       tool_choice: { type: "tool", name: TOOL.name },
@@ -179,16 +191,21 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     const block = response.content.find((c): c is Anthropic.ToolUseBlock => c.type === "tool_use");
     if (block) {
       const input = block.input as Record<string, unknown>;
+      const isoDate = (v: unknown) => (typeof v === "string" && /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : "");
       toolInput = {
-        reply: typeof input.reply === "string" ? input.reply : "",
-        preferredDays: Array.isArray(input.preferredDays) ? (input.preferredDays as string[]) : [],
-        timeOfDay: Array.isArray(input.timeOfDay)
-          ? (input.timeOfDay as MeetingConstraints["timeOfDay"])
+        reply: cleanText(input.reply, 600),
+        preferredDays: Array.isArray(input.preferredDays)
+          ? input.preferredDays.map((d) => cleanText(d, 20)).filter(Boolean).slice(0, 7)
           : [],
-        earliestDate: typeof input.earliestDate === "string" ? input.earliestDate : "",
-        latestDate: typeof input.latestDate === "string" ? input.latestDate : "",
+        timeOfDay: Array.isArray(input.timeOfDay)
+          ? (input.timeOfDay.filter(
+              (t) => t === "morning" || t === "afternoon" || t === "evening",
+            ) as MeetingConstraints["timeOfDay"])
+          : [],
+        earliestDate: isoDate(input.earliestDate),
+        latestDate: isoDate(input.latestDate),
         durationMin: typeof input.durationMin === "number" ? input.durationMin : 0,
-        theirTimezone: typeof input.theirTimezone === "string" ? input.theirTimezone : "",
+        theirTimezone: cleanText(input.theirTimezone, 60),
         showingSlots: input.showingSlots === true,
       };
     }
