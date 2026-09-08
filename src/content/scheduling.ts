@@ -97,7 +97,7 @@ const schedulingData: z.input<typeof schedulingConfigSchema> = {
   ],
   durationsMin: [30],
   slotStepMin: 30,
-  leadTimeHours: 24,
+  leadTimeHours: 12,
   horizonDays: 14,
   blackoutDates: [],
   notes:
