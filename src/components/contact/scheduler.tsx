@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowUp, CalendarPlus, Check, Download, Loader2, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { siteConfig } from "@/lib/site";
 import type {
   MeetingSlot,
   ScheduleChatResponse,
@@ -34,6 +35,7 @@ export function Scheduler() {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const [ended, setEnded] = useState(false);
   const [selected, setSelected] = useState<MeetingSlot | null>(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -56,7 +58,7 @@ export function Scheduler() {
 
   async function send() {
     const text = input.trim();
-    if (!text || pending) return;
+    if (!text || pending || ended) return;
     setError(null);
     setInput("");
     const next: Msg[] = [...messages, { id: uid(), role: "user", content: text }];
@@ -82,6 +84,7 @@ export function Scheduler() {
           note: data.note,
         },
       ]);
+      if (data.ended) setEnded(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.");
     } finally {
@@ -137,7 +140,7 @@ export function Scheduler() {
         <p className="text-muted mt-2 text-sm">
           Talk through a time in a couple of lines instead of an email thread. It reads your
           preferred day and time, then shows real open slots. Browsing times needs nothing;
-          confirming needs your name and email.
+          confirming needs your full name and email.
         </p>
         <button
           type="button"
@@ -264,14 +267,14 @@ export function Scheduler() {
             Confirm <span className="font-medium">{selected.label}</span> ({selected.durationMin}{" "}
             min)
           </p>
-          <p className="text-muted mt-1 text-xs">Required to confirm: your name and email.</p>
+          <p className="text-muted mt-1 text-xs">Required to confirm: your full name and email.</p>
           <div className="mt-3 grid gap-2 sm:grid-cols-2">
             <label className="block">
-              <span className="sr-only">Your name</span>
+              <span className="sr-only">Your full name</span>
               <input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Name *"
+                placeholder="Full name (first and last) *"
                 autoComplete="name"
                 className="border-border bg-background focus:border-accent w-full rounded-md border px-3 py-2 text-sm outline-none"
               />
@@ -301,7 +304,11 @@ export function Scheduler() {
             <button
               type="button"
               onClick={confirm}
-              disabled={confirming || name.trim().length < 2 || !email.includes("@")}
+              disabled={
+                confirming ||
+                name.trim().split(/\s+/).filter(Boolean).length < 2 ||
+                !email.includes("@")
+              }
               className="bg-accent text-accent-foreground inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-[filter] hover:brightness-110 disabled:opacity-50"
             >
               {confirming ? (
@@ -320,6 +327,14 @@ export function Scheduler() {
             </button>
           </div>
         </div>
+      ) : ended ? (
+        <p className="border-border/60 text-muted border-t px-4 py-3 text-xs">
+          This chat is closed. Email{" "}
+          <a href={`mailto:${siteConfig.email}`} className="text-accent">
+            {siteConfig.email}
+          </a>{" "}
+          to schedule.
+        </p>
       ) : (
         <form
           onSubmit={(e) => {
@@ -361,7 +376,7 @@ export function Scheduler() {
 
       <p className="text-muted border-border/60 border-t px-4 py-2.5 text-[11px] leading-relaxed">
         Your messages are sent to Anthropic (Claude) to read your preferred timing. Nothing is saved
-        until you confirm with your name and email — that books the slot and emails it to
+        until you confirm with your full name and email — that books the slot and emails it to
         Harshvardhan.
       </p>
     </div>

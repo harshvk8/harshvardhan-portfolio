@@ -48,6 +48,11 @@ export type ScheduleChatResponse = {
   showingSlots: boolean;
   /** Set when slots is empty because nothing matched — the engine widened. */
   note?: string;
+  /** This turn was an off-topic / profane message and got a warning. */
+  warning?: boolean;
+  /** The conversation is closed (too many off-topic messages). The client
+   *  should stop accepting input; no further requests will be answered. */
+  ended?: boolean;
 };
 
 export type ScheduleConfirmRequest = {
