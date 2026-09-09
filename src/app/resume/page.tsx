@@ -30,7 +30,11 @@ export default function ResumePage() {
         <ButtonAnchor href={siteConfig.links.resume}>
           <FileText className="h-4 w-4" /> View resume
         </ButtonAnchor>
-        <ButtonAnchor href={siteConfig.links.resume} variant="secondary" download>
+        <ButtonAnchor
+          href={siteConfig.links.resume}
+          variant="secondary"
+          download="Harshvardhan-Nimesh-Resume.pdf"
+        >
           <Download className="h-4 w-4" /> Download PDF
         </ButtonAnchor>
       </div>
