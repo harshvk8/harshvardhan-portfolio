@@ -2,7 +2,8 @@
  * Single source of truth for identity, links, navigation, and the short
  * prose on the About / Resume / Home screens.
  *
- * Open: set NEXT_PUBLIC_SITE_URL once there's a production deployment.
+ * Set NEXT_PUBLIC_SITE_URL on each deployment (Preview URLs differ from the
+ * production domain); the fallback below is the production domain.
  */
 export const siteConfig = {
   name: "Harshvardhan Kumar Nimesh",
@@ -15,7 +16,7 @@ export const siteConfig = {
   // Overridden per-environment by NEXT_PUBLIC_SITE_URL; `||` so an empty
   // value (e.g. a blank Vercel env var) still falls back instead of
   // producing `new URL("")`.
-  url: process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://harshvardhan-portfolio.vercel.app",
+  url: process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://harshvardhannimesh.com",
   locale: "en_US",
 
   email: "harshvk8240@gmail.com",
