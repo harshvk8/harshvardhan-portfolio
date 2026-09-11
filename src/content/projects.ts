@@ -378,4 +378,139 @@ export const projectsData: ProjectInput[] = [
       ],
     },
   },
+
+  {
+    slug: "this-portfolio",
+    name: "This Portfolio",
+    tagline:
+      "Most developer portfolios prove you can use a component library. This one had to prove how I think — and then actually work as the tool a recruiter uses to reach me.",
+    year: "2026",
+    featured: true,
+    stack: [
+      "Next.js",
+      "React",
+      "TypeScript",
+      "Tailwind CSS",
+      "React Three Fiber",
+      "Zod",
+      "Claude (Anthropic API)",
+      "Vercel",
+    ],
+    repo: "https://github.com/harshvk8/harshvardhan-portfolio",
+    demo: "https://harshvardhannimesh.com",
+    caseStudy: {
+      problem:
+        "Most developer portfolios are the same shape: a hero section, a grid of project cards, a contact form that goes into a void. They prove you can assemble a page — not that you can notice a real problem, weigh options, and defend a decision. As a CS student applying for internships and new-grad roles, a portfolio that only listed technologies wasn't going to be the thing that got me a callback.",
+      observation:
+        "Every project I'd built already had the interesting part — the reasoning, the constraints, the thing that broke and how I fixed it — living only in my head or in commit messages nobody would read. The portfolio itself was also a chance to demonstrate that reasoning live, not just describe it: a recruiter using an AI scheduling assistant to book time with me is a stronger proof than a paragraph claiming I can build one.",
+      question:
+        "Could the portfolio be a piece of software that shows how I think — problem, reasoning, decision, result — while still working, in under a minute, for a recruiter who just wants my resume and a way to reach me?",
+      userNeed:
+        "A recruiter has about a minute and needs to verify: can this person build real things, do they communicate clearly, and is it easy to actually talk to them. They don't want to hunt for a resume link, and they don't want to send an email into a void and wait days for a reply.",
+      constraints: [
+        "Solo build, done in phases alongside full-time coursework and two part-time IT jobs",
+        "Must never sacrifice usability for visual flair — a recruiter who can't find the resume link loses more than a missing animation costs",
+        "No dedicated backend budget — Vercel's free tier plus free tiers of Upstash and Resend",
+        "Any public AI feature is a spend and abuse surface the moment it ships, not a hypothetical one",
+        "Real personal data at stake — my own email and availability — so the scheduler couldn't just trust whatever the client sent",
+      ],
+      options: [
+        {
+          option: "A standard single-page portfolio — hero, project grid, contact form",
+          tradeoff:
+            "Fast to build and instantly familiar to a recruiter, but indistinguishable from thousands of others and says nothing about how I think",
+        },
+        {
+          option: "A fully 3D, WebGL-first site — everything happens inside the canvas",
+          tradeoff:
+            "Memorable, but risks being unusable on low-end phones, bad for SEO and accessibility, and lets the visual layer overshadow the actual content",
+        },
+        {
+          option:
+            "A conventional site by default, with a 3D layer as an additive, skippable experience",
+          tradeoff:
+            "More to build — two coordinated presentations of the same content — but the content never depends on the 3D layer working",
+        },
+      ],
+      decision:
+        "I built it in three deliberate phases — make it work, make it memorable, make it demonstrate how I think — so at every point there was a shippable, recruiter-usable site, and the universe/3D layer was additive on top of it, never a gate in front of it. Concretely: Next.js with content validated by Zod at build time (a broken case study fails `next build`, not the live site), an explicit low-animation Recruiter Mode next to the 3D Explore Mode, a scheduling assistant built on a model-extracts / engine-decides split rather than a bare chatbot wired to an API key, and real cost and abuse controls on every public AI endpoint before it shipped, not after someone found the gap.",
+      architecture:
+        "Root layout\n  ModeProvider (localStorage + prefers-reduced-motion default) picks Explore vs Recruiter\n    Explore: 3D universe (React Three Fiber, code-split, ssr:false) on desktop;\n             simplified vertical Sun + planet-cards layout on mobile\n    Recruiter: plain fast layout, identical content, no 3D at all\n\nContent: src/content/*.ts --Zod--> parsed once at module load\n  a malformed project / experience / skill entry fails the build, not the page\n\nContact -> AI scheduling assistant\n  chat message -> POST /api/schedule\n    profanity regex -> cheap Haiku triage -> off-topic: warn/close, Sonnet never spent\n    on-topic -> Sonnet (Haiku once already warned) extracts constraints only\n  deterministic engine (lib/scheduling/slots.ts) generates every real slot from\n    src/content/scheduling.ts and filters by those constraints; the model never\n    states or invents a specific time\n  pick a slot -> POST /api/schedule/confirm\n    re-derives the exact slot (rejects stale/tampered), verifies the email\n    domain resolves (MX / A record, blocks disposable domains), notifies me by\n    email (Resend), returns Google Calendar + .ics links to the visitor",
+      challenges: [
+        {
+          challenge:
+            "A public AI endpoint is an open cost and abuse surface the moment it's live — anyone can send it anything, repeatedly.",
+          initialApproach:
+            "One Claude call per message, with a generic per-IP rate limit as the only backstop.",
+          problem:
+            "Every stray, off-topic, or hostile message costs the same as a real booking conversation. A rate limit caps the worst case eventually, but doesn't stop someone from running up real spend well before hitting it.",
+          decision:
+            "Classify before spending, and never trust the client's account of the conversation.",
+          finalSolution:
+            "A blunt profanity regex and a cheap Haiku triage pass gate every message before the full Sonnet call ever runs. Two off-topic warnings — counted by scanning the transcript for a fixed marker string the server itself writes, not a client-supplied counter — close the conversation server-side and stop calling any model at all.",
+          result:
+            "A bad-faith session now costs a small fraction of what a real conversation costs, and can't be talked past by editing the message history sent from the browser.",
+        },
+        {
+          challenge:
+            "The scheduler has to guarantee a shown time is genuinely free, with no real calendar backend behind it.",
+          initialApproach:
+            "Let the model read the conversation and also state which specific times were open.",
+          problem:
+            "A model has no ground truth for 'is this actually free' — a slightly-wrong or fully hallucinated time looks identical to a real one in the reply.",
+          decision:
+            "Split the responsibility: the model interprets, a deterministic function decides.",
+          finalSolution:
+            "The model only extracts constraints — preferred day, time of day, duration. A plain TypeScript function generates every real slot from a config file of my actual availability and re-validates the exact slot (start and end) chosen at confirm time.",
+          result:
+            "Every slot ever shown is provably inside my stated availability and lead time, and a stale, tampered, or duration-swapped confirm request is rejected server-side, never just trusted.",
+        },
+        {
+          challenge: "A confirmed booking with a mistyped email silently wastes everyone's time.",
+          initialApproach: "A regex format check on the email, the same as most forms do.",
+          problem:
+            "'jane@gmial.con' passes a format check and fails completely — the booking looks confirmed but no one can ever be reached.",
+          decision:
+            "Verify the domain can actually receive mail, not just that the string looks like one.",
+          finalSolution:
+            "Confirm runs a DNS MX lookup on the domain (falling back to an A record for domains without an explicit MX) and rejects known disposable/test domains outright; a transient DNS error doesn't block a real visitor.",
+          result:
+            "A typo'd domain is caught before 'confirmed', while a real address still goes through.",
+        },
+      ],
+      codeDecisions: [
+        {
+          title: "Cost is screened before the expensive model is ever called",
+          language: "typescript",
+          snippet:
+            "// zero-cost gate — no model call at all\nif (PROFANITY.test(lastUserContent)) return warningResponse(priorWarnings);\n\n// cheap Haiku triage before spending Sonnet — skipped once already flagged,\n// because the full pass below then runs on Haiku anyway\nif (priorWarnings === 0) {\n  const offTopic = await triageIsOffTopic(client, turns);\n  if (offTopic === true) return warningResponse(priorWarnings);\n}\n\nconst heavyModel = priorWarnings >= 1 ? HAIKU : SONNET;",
+          why: "A public endpoint has to assume some visitors aren't real recruiters. A regex catches the obvious cases for free; a cheap Haiku call classifies everything else before the expensive model runs, so a stray or hostile message costs a fraction of a cent instead of a full Sonnet call — and a repeat offender is cut off entirely, not just slowed down.",
+        },
+        {
+          title: "The model never gets to say what's true",
+          language: "typescript",
+          snippet:
+            "export function findBookableSlot(config, now, startISO, endISO) {\n  const matches = generateSlots(config, now).filter(\n    (s) => s.startISO === new Date(startISO).toISOString(),\n  );\n  if (endISO) return matches.find((s) => s.endISO === new Date(endISO).toISOString()) ?? null;\n  return matches.find((s) => s.durationMin === config.durationsMin[0]) ?? matches[0] ?? null;\n}",
+          why: "Confirm re-derives every slot from the availability config and rejects anything that isn't an exact start-and-end match — so a slot can't be booked from a stale page, a tampered request, or a model's mistake. The model only ever describes availability in general terms; it never gets to assert that a specific time is free.",
+        },
+      ],
+      beforeAfter: [
+        {
+          aspect: "The Contact page",
+          before:
+            "Email, LinkedIn, and GitHub links, plus a dashed-border note promising an AI scheduling assistant 'coming in Phase 3.'",
+          after:
+            "A working assistant: a recruiter states a rough day or time, sees real slots generated from my actual availability, picks one, and confirms with a full name and a domain-verified email — phone optional, and the interface states exactly what's required before it's required.",
+          reason:
+            "The plan called for the scheduler to be a project in its own right, not just a form embedded in a page — so it had to actually ship inside the site it's promoted on, not stay a placeholder note.",
+        },
+      ],
+      learned: [
+        "The pattern that made every AI feature on this site trustworthy is the same one, twice: the model interprets, and a small deterministic function decides. That split matters more once a feature is public and someone will eventually try to break it.",
+        "Shipping in three phases — a plain, recruiter-ready site first, then the interactive layer, then the reasoning and the AI feature — meant the site was never in a half-finished state if someone found it early. Each phase had to stand on its own.",
+        "A public endpoint isn't done when it works for a good-faith visitor. The off-topic cutoff and the DNS email check both came from watching a handful of adversarial test messages get through — that's the traffic to assume before shipping, not after.",
+        "The domain, DNS, deployment protection, and email delivery are their own small system with their own failure modes, separate from code that ran fine on localhost. Testing has to include that system, not stop at 'it works on my machine.'",
+      ],
+    },
+  },
 ];

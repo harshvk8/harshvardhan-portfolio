@@ -14,12 +14,13 @@ export const metadata: Metadata = {
 const PHOTO = "harshvardhan.jpg";
 
 const thinkingCopy: Record<string, string> = {
-  Observe: "Notice the friction people actually live with, not the feature I want to build.",
-  Question: "Ask what would have to be true for software to genuinely help here.",
-  Design: "Weigh a few real options and their trade-offs before committing.",
-  Build: "Ship the smallest version that puts the idea in front of a user.",
-  Test: "Watch it get used; let reality correct the plan.",
-  Improve: "Change one thing at a time based on what the use revealed.",
+  Observe:
+    "I focus on the problems people actually experience, not just the features I want to build.",
+  Question: "I ask what needs to be true for software to genuinely help.",
+  Design: "I compare practical options and their trade-offs before choosing an approach.",
+  Build: "I build the smallest useful version and put it in front of real users.",
+  Test: "I watch how people use it and let real feedback challenge my assumptions.",
+  Improve: "I make one change at a time based on what I learn.",
 };
 
 export default function AboutPage() {
@@ -99,7 +100,7 @@ export default function AboutPage() {
       <section className="border-border mt-16 border-t pt-10">
         <h2 className="text-accent font-mono text-xs tracking-widest uppercase">How I think</h2>
         <p className="text-muted mt-3 max-w-2xl">
-          The same loop runs through every project on this site.
+          I follow the same process for every project I build.
         </p>
         <div className="mt-6">
           <ThinkingFlow />
