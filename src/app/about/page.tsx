@@ -100,7 +100,7 @@ export default function AboutPage() {
       <section className="border-border mt-16 border-t pt-10">
         <h2 className="text-accent font-mono text-xs tracking-widest uppercase">How I think</h2>
         <p className="text-muted mt-3 max-w-2xl">
-          I follow the same process for every project I build.
+          This is the process I use to approach every project.
         </p>
         <div className="mt-6">
           <ThinkingFlow />
