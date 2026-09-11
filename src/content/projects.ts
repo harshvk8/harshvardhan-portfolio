@@ -383,7 +383,7 @@ export const projectsData: ProjectInput[] = [
     slug: "this-portfolio",
     name: "This Portfolio",
     tagline:
-      "Most developer portfolios prove you can use a component library. This one had to prove how I think — and then actually work as the tool a recruiter uses to reach me.",
+      "Most developer portfolios show that you can build interfaces. This one had to show how I think — and also work as a practical tool for recruiters to understand my work and reach me.",
     year: "2026",
     featured: true,
     stack: [
