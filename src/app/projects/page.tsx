@@ -18,8 +18,8 @@ export default function ProjectsPage() {
     <Container className="py-16">
       <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">Projects</h1>
       <p className="text-muted mt-3 max-w-2xl">
-        Selected for what they demonstrate about problem-finding and engineering judgement, not the
-        number of technologies involved. Every card opens a full case study.
+        Selected projects that show how I approach problems, make engineering decisions, and build
+        solutions. Each one includes a full case study.
       </p>
 
       {featured.length > 0 ? (
