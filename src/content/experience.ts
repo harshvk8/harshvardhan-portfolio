@@ -40,7 +40,7 @@ export const experienceData: ExperienceInput[] = [
   {
     org: "Montclair State University",
     role: "IT Support Analyst",
-    period: "2025 – Present",
+    period: "May 2026 – Present",
     kind: "work",
     theme: "Systems + troubleshooting",
     developed: [
