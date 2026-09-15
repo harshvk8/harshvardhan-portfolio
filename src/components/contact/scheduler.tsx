@@ -386,12 +386,6 @@ export function Scheduler() {
           {error}
         </p>
       ) : null}
-
-      <p className="text-muted border-border/60 border-t px-4 py-2.5 text-[11px] leading-relaxed">
-        Your messages are sent to Anthropic (Claude) to read your preferred timing. Nothing is saved
-        until you confirm with your full name and email — that books the slot and emails it to
-        Harshvardhan.
-      </p>
     </div>
   );
 }
