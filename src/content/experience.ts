@@ -8,7 +8,7 @@ export const experienceData: ExperienceInput[] = [
   {
     org: "ShopRite",
     role: "Cashier, Clerk, Self Checkout Host",
-    period: "Oct 2024 – Present",
+    period: "Jan 2024 – Present",
     kind: "work",
     theme: "People + operations",
     developed: [

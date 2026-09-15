@@ -15,7 +15,7 @@ export const projectsData: ProjectInput[] = [
     slug: "red-hawk-wallet-android",
     name: "Red Hawk Wallet (Android)",
     tagline:
-      "Campus ID, balances, events, and offers lived in separate places — one Android app to hold them together.",
+      "Campus ID, balances, events, and offers were scattered across separate systems — Red Hawk Wallet unified them in a single Android app.",
     year: "2026",
     featured: true,
     stack: [
@@ -227,7 +227,7 @@ export const projectsData: ProjectInput[] = [
     slug: "scheduleai",
     name: "ScheduleAI",
     tagline:
-      "Scheduling looks simple until the constraints interact — and then a timetable can look valid while it isn't.",
+      "Scheduling looks simple until constraints interact — then a timetable can appear valid while still breaking the rules that matter.",
     year: "2026",
     featured: true,
     stack: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Node.js", "Firebase"],
@@ -383,7 +383,7 @@ export const projectsData: ProjectInput[] = [
     slug: "this-portfolio",
     name: "This Portfolio",
     tagline:
-      "Most developer portfolios prove you can use a component library. This one had to prove how I think — and then actually work as the tool a recruiter uses to reach me.",
+      "Most developer portfolios show that you can build interfaces. This one had to show how I think — and also work as a practical tool for recruiters to understand my work and reach me.",
     year: "2026",
     featured: true,
     stack: [

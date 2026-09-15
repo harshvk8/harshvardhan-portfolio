@@ -35,7 +35,10 @@ export default function ContactPage() {
   return (
     <Container width="prose" className="py-16">
       <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">Contact</h1>
-      <p className="text-muted mt-3">The quickest way to reach me is email. I read everything.</p>
+      <p className="text-muted mt-3">
+        The quickest way to reach me is through my AI scheduling assistant below, or by email if
+        you&apos;d rather write directly.
+      </p>
 
       <ul className="divide-border border-border mt-8 divide-y rounded-xl border">
         {methods.map(({ label, value, href, Icon }) => {

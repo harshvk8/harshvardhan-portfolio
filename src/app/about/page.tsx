@@ -16,7 +16,7 @@ const PHOTO = "harshvardhan.jpg";
 const thinkingCopy: Record<string, string> = {
   Observe:
     "I focus on the problems people actually experience, not just the features I want to build.",
-  Question: "I ask what needs to be true for software to genuinely help.",
+  Question: "I clarify the problem, user needs, and constraints before choosing a solution.",
   Design: "I compare practical options and their trade-offs before choosing an approach.",
   Build: "I build the smallest useful version and put it in front of real users.",
   Test: "I watch how people use it and let real feedback challenge my assumptions.",
@@ -100,7 +100,7 @@ export default function AboutPage() {
       <section className="border-border mt-16 border-t pt-10">
         <h2 className="text-accent font-mono text-xs tracking-widest uppercase">How I think</h2>
         <p className="text-muted mt-3 max-w-2xl">
-          I follow the same process for every project I build.
+          This is the process I use to approach every project.
         </p>
         <div className="mt-6">
           <ThinkingFlow />
