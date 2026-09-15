@@ -22,8 +22,8 @@ export default function ResumePage() {
     <Container width="prose" className="py-16">
       <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">Resume</h1>
       <p className="text-muted mt-3">
-        Prefer the traditional one-page version? Here it is. The rest of this site is the longer
-        answer.
+        Prefer the traditional format? Here&apos;s my one-page resume — everything else on this site
+        is the longer, fuller answer.
       </p>
 
       <div className="mt-6 flex flex-wrap gap-3">
@@ -50,6 +50,10 @@ export default function ResumePage() {
           <div className="grid gap-1 sm:grid-cols-[8rem_1fr]">
             <dt className="text-muted">Role</dt>
             <dd>{siteConfig.role}</dd>
+          </div>
+          <div className="grid gap-1 sm:grid-cols-[8rem_1fr]">
+            <dt className="text-muted">Looking for</dt>
+            <dd>Software Engineer, Mobile Engineer, Full-Stack Developer, and related roles</dd>
           </div>
           <div className="grid gap-1 sm:grid-cols-[8rem_1fr]">
             <dt className="text-muted">Education</dt>
