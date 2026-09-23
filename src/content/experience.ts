@@ -35,7 +35,7 @@ export const experienceData: ExperienceInput[] = [
       "Attention to detail",
     ],
     story:
-      "Evaluating model responses made me more systematic about correctness, consistency, and edge cases — using defined criteria instead of assuming an output is correct because it looks plausible.",
+      "Evaluating model responses made me more systematic about correctness, consistency, and edge cases, using defined criteria instead of assuming an output is correct because it looks plausible.",
   },
   {
     org: "Montclair State University",

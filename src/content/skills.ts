@@ -14,7 +14,7 @@ export const constellationsData: ConstellationInput[] = [
     primary: true,
     scale: 1.25,
     description:
-      "How I approach building software — breaking problems down, designing maintainable systems, working iteratively, and using version control throughout development.",
+      "How I approach building software: breaking problems down, designing maintainable systems, working iteratively, and using version control throughout development.",
     skills: [
       {
         id: "software-development",
@@ -83,7 +83,7 @@ export const constellationsData: ConstellationInput[] = [
     id: "languages",
     name: "Languages",
     scale: 1.1,
-    description: "The languages I build in — strongest first, not all at the same depth.",
+    description: "The languages I build in, strongest first, not all at the same depth.",
     skills: [
       {
         id: "java",
@@ -168,7 +168,7 @@ export const constellationsData: ConstellationInput[] = [
         size: "lg",
         anchor: true,
         evidence: [
-          "Used in: Red Hawk Wallet (Flutter) — cross-platform iOS + Android, at MVP",
+          "Used in: Red Hawk Wallet (Flutter), cross-platform iOS + Android, at MVP",
           "Mobile application development",
         ],
         projects: ["red-hawk-wallet-flutter"],
@@ -255,7 +255,7 @@ export const constellationsData: ConstellationInput[] = [
         anchor: true,
         evidence: [
           "Pull requests, reviews, Actions, Pages",
-          "Every project repo — Red Hawk Wallet, ScheduleAI, this site",
+          "Every project repo: Red Hawk Wallet, ScheduleAI, this site",
         ],
         projects: ["red-hawk-wallet-android", "scheduleai"],
       },
@@ -312,7 +312,7 @@ export const constellationsData: ConstellationInput[] = [
     name: "Engineering in the Real World",
     scale: 0.8,
     description:
-      "Skills from real work — how I operate on a team, diagnose problems, communicate with users, evaluate systems, and work under constraints. They support the developer, not replace it.",
+      "Skills from real work: how I operate on a team, diagnose problems, communicate with users, evaluate systems, and work under constraints. They support the developer, not replace it.",
     skills: [
       {
         id: "troubleshooting",
@@ -362,7 +362,7 @@ export const constellationsData: ConstellationInput[] = [
         id: "attention-to-detail",
         name: "Attention to Detail",
         size: "sm",
-        evidence: ["Catching small inconsistencies before they compound — inventory, model output"],
+        evidence: ["Catching small inconsistencies before they compound: inventory, model output"],
       },
       {
         id: "team-collaboration",

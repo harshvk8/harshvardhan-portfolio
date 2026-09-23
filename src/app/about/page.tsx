@@ -8,7 +8,7 @@ import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "About",
-  description: `About ${siteConfig.name} — background, interests, and how I approach building software.`,
+  description: `About ${siteConfig.name}: background, interests, and how I approach building software.`,
 };
 
 const PHOTO = "harshvardhan.jpg";

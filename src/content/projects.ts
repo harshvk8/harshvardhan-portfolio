@@ -32,15 +32,15 @@ export const projectsData: ProjectInput[] = [
       problem:
         "A Montclair State student's campus life is split across separate tools: a plastic Red Hawk ID for building access and meal swipes, no easy way to check the Red Hawk Dollars / Flex / Bonus / meal-swipe balances tied to it, and paper flyers for events and offers. Each piece is handled somewhere different.",
       observation:
-        "A lot of campus experience is split across different places — student ID, events, offers, other student services. That made me want to see what a single student-focused app could look like instead of treating each feature as its own separate tool.",
+        "A lot of campus experience is split across different places: student ID, events, offers, other student services. That made me want to see what a single student-focused app could look like instead of treating each feature as its own separate tool.",
       question:
         "Could we build one student-focused app that brings useful campus features together while still keeping authentication, user data, and access control properly separated?",
       userNeed:
-        "Students need one place for the four balances, a digital ID a staff member can verify, and campus events and offers — with authentication, user data, and access control kept separate so features don't quietly inherit each other's permissions.",
+        "Students need one place for the four balances, a digital ID a staff member can verify, and campus events and offers, with authentication, user data, and access control kept separate so features don't quietly inherit each other's permissions.",
       constraints: [
-        "Six-person team — work had to split by feature so people weren't editing the same files",
+        "Six-person team: work had to split by feature so people weren't editing the same files",
         "Registration gated behind email verification; protected features must stay unreachable until verified",
-        "Student project — no backend budget, so Firebase's free tier for auth, database, and storage",
+        "Student project: no backend budget, so Firebase's free tier for auth, database, and storage",
         "A payment-shaped feature: a balance and its transaction history must never disagree",
       ],
       options: [
@@ -66,9 +66,9 @@ export const projectsData: ProjectInput[] = [
       challenges: [
         {
           challenge:
-            "Designing the verification and access flow so protected features (wallet, digital ID) couldn't be reached before a user was verified — including through back-navigation or a deep link, not just the normal path.",
+            "Designing the verification and access flow so protected features (wallet, digital ID) couldn't be reached before a user was verified, including through back-navigation or a deep link, not just the normal path.",
           initialApproach:
-            "Guard each protected screen individually — check verification state where the screen is built.",
+            "Guard each protected screen individually: check verification state where the screen is built.",
           problem:
             "That spreads the same check across every screen and treats the screen as the boundary. It's easy to add a new screen and forget the check, or leave a navigation path open.",
           decision:
@@ -76,7 +76,7 @@ export const projectsData: ProjectInput[] = [
           finalSolution:
             "The splash/auth guard resolves auth + verification state on every entry and picks the destination: no user -> Login; user but not verified -> the Email-verification screen (with resend); verified -> Dashboard. The back stack is cleared so there's no route back into the protected tree.",
           result:
-            "Access is decided once, in front of the protected screens, instead of re-checked on each one — so there isn't a screen reachable in the wrong state.",
+            "Access is decided once, in front of the protected screens, instead of re-checked on each one, so there isn't a screen reachable in the wrong state.",
         },
       ],
       codeDecisions: [
@@ -96,7 +96,7 @@ export const projectsData: ProjectInput[] = [
         },
       ],
       learned: [
-        "Authentication isn't finished just because a user can log in — protected features still need explicit authorization and verification checks.",
+        "Authentication isn't finished just because a user can log in. Protected features still need explicit authorization and verification checks.",
         "Shared data models have to be agreed on early when several developers are building features against the same Firebase database.",
         "Feature branches and pull requests work much better when everyone understands where one feature's responsibilities end and the next begins.",
         "Building wallet-related features made me think more carefully about which state the client should be allowed to control and which state needs stronger validation.",
@@ -133,17 +133,17 @@ export const projectsData: ProjectInput[] = [
         "iOS and Android students need one wallet: add money, pay a vendor by scanning a QR, show a student ID, collect points. Vendors need to request and receive payments and run redemptions. Admins need to approve vendors and see transactions, users, and reports.",
       constraints: [
         "One codebase for iOS + Android, with a real iOS build (entitlements, signing) done through Xcode",
-        "Clients must never write a balance — money moves server-side only",
+        "Clients must never write a balance: money moves server-side only",
         "Reuse Firebase (Auth, Firestore, Storage); add Cloud Functions + Stripe",
         "Three roles in one app, without one role reaching another's screens",
       ],
       options: [
         {
-          option: "Kotlin Multiplatform — share logic, native UI per platform",
+          option: "Kotlin Multiplatform: share logic, native UI per platform",
           tradeoff: "Native UI on each platform, but still two UI layers and a newer toolchain",
         },
         {
-          option: "Flutter — one Dart codebase, one UI toolkit, both platforms",
+          option: "Flutter: one Dart codebase, one UI toolkit, both platforms",
           tradeoff:
             "One codebase and one consistent UI architecture; the whole UI is re-implemented in Dart once",
         },
@@ -154,26 +154,26 @@ export const projectsData: ProjectInput[] = [
         },
       ],
       decision:
-        "I chose Flutter because I wanted one codebase for Android and iOS and I already had experience building with Flutter and Firebase. For this project and team size, development speed and one consistent UI architecture mattered more than maintaining separate platform implementations. I didn't choose Flutter because Kotlin Multiplatform or React Native are incapable — it was the best fit for what I could build and maintain efficiently.",
+        "I chose Flutter because I wanted one codebase for Android and iOS and I already had experience building with Flutter and Firebase. For this project and team size, development speed and one consistent UI architecture mattered more than maintaining separate platform implementations. I didn't choose Flutter because Kotlin Multiplatform or React Native are incapable. It was the best fit for what I could build and maintain efficiently.",
       architecture:
         "One binary, three role UIs (role on the user doc; enforced by firestore.rules and the router):\n  STUDENT  wallet, add money, pay / send / receive, QR student ID, QR scanner,\n           transactions, points & rewards, offers + redemption, events, notifications, support chat\n  VENDOR   dashboard, create payment request, QR payment, redemption scanner,\n           sales reports, offers, transactions, profile — gated behind an approval flow (/vendor/waiting)\n  ADMIN    approve vendors, manage users / vendors / transactions / events / offers,\n           reports, reported issues, support-chat inbox\n\nmain.dart: init Firebase, Stripe (publishable key), push notifications -> RedHawkWalletApp\n\ngo_router — one redirect function:\n  not logged in           -> /login               (legal routes always allowed)\n  logged in, unverified   -> /email-verification\n  role mismatch           -> /home | /vendor | /admin    (cross-role access blocked)\n  vendor not approved     -> /vendor/waiting ;   suspended -> auto sign-out\n  refreshListenable = auth ChangeNotifier\n\nMoney path — server-side only:\n  add funds  -> CF createStripePaymentIntent -> Stripe PaymentSheet -> webhook confirmStripePayment credits wallet\n  pay vendor -> CF processPayment (student -> approved vendor) -> writes the transactions doc\n  firestore.rules: clients cannot edit a balance field\n\nQR payloads (qr_payloads.dart), all server-verified:\n  receive     redhawkwallet:receive:{uid}\n  student ID  redhawkwallet:studentid:{token}     token minted by CF issueStudentIdToken, rotates — not the uid\n  redeem      redhawkwallet:redeem:{offerId}:{uid} -> offers/{offerId}/redemptions/{uid}, verifyOfferRedemption\n\nFirestore: users/{uid}, wallets/{uid} { balance, points, updatedAt }, transactions, vendors, offers, events, support chats\nUniversity gate: UniversityEmailValidator — montclair.edu, or *.edu / *.ac.uk / *.edu.au",
       challenges: [
         {
           challenge:
             "The Android build let the client perform the debit itself, inside a Firestore transaction.",
-          initialApproach: "Carry that over — do the balance change on-device, just in Dart.",
+          initialApproach: "Carry that over: do the balance change on-device, just in Dart.",
           problem:
             "A client-side debit means the app is trusted with money. Rules can narrow that, but the real fix is for the client to never touch a balance at all.",
           decision: "Move the entire money path to the server.",
           finalSolution:
-            "payVendor calls a processPayment Cloud Function; add-funds goes through createStripePaymentIntent plus a Stripe webhook; firestore.rules rejects every client write to a balance field. The app can request a payment and read the result — it can't move money.",
+            "payVendor calls a processPayment Cloud Function; add-funds goes through createStripePaymentIntent plus a Stripe webhook; firestore.rules rejects every client write to a balance field. The app can request a payment and read the result. It can't move money.",
           result:
             "Balance changes are atomic and server-authoritative, and the client is no longer inside the trust boundary for money.",
         },
         {
           challenge: "A digital-ID QR that encodes the user's uid can be screenshotted and reused.",
           initialApproach: "Put redhawkwallet:studentid:{uid} in the QR, like the receive code.",
-          problem: "That's a static credential — anyone who sees it once can present it forever.",
+          problem: "That's a static credential: anyone who sees it once can present it forever.",
           decision: "Make the ID QR a short-lived, server-minted token, not an identifier.",
           finalSolution:
             "issueStudentIdToken (Cloud Function) mints a rotating token; the QR carries redhawkwallet:studentid:{token}; the scanner resolves it server-side. Receive and redeem QRs stay static because they only work with a server check anyway.",
@@ -185,7 +185,7 @@ export const projectsData: ProjectInput[] = [
             "Three roles — student, vendor, admin — but one app, and a vendor must not be able to reach admin screens (or vice versa).",
           initialApproach: "Ship separate builds, or hide the other roles' screens in the UI.",
           problem:
-            "Separate builds triple the release work; hiding screens in the UI isn't a security boundary — the routes still exist and Firestore is still one database.",
+            "Separate builds triple the release work; hiding screens in the UI isn't a security boundary. The routes still exist and Firestore is still one database.",
           decision: "One binary; role is data, and it's enforced in the two places that matter.",
           finalSolution:
             "Role lives on the user doc. firestore.rules scope every read/write by role (a vendor can't read another vendor's sales; only an admin can flip approval). The go_router redirect sends each role to its own tree and blocks cross-role paths, with an approval gate for new vendors and auto-logout for suspended accounts. The UI just renders whatever the router allows.",
@@ -210,12 +210,12 @@ export const projectsData: ProjectInput[] = [
           after:
             "One Flutter codebase on iOS (entitlements + signing via Xcode) and Android. QR payments; real card top-ups via Stripe; every balance change in a Cloud Function with firestore.rules blocking client writes. Student, vendor, and admin in one app.",
           reason:
-            "The payment model had to be redesigned rather than copied: once the app involved multiple roles and real wallet state, balance changes couldn't be something the client just updates. The transaction had to be authoritative first, with the UI reflecting the result — not the UI as the source of truth.",
+            "The payment model had to be redesigned rather than copied: once the app involved multiple roles and real wallet state, balance changes couldn't be something the client just updates. The transaction had to be authoritative first, with the UI reflecting the result, not the UI as the source of truth.",
         },
       ],
       learned: [
         "I started with service classes for business / Firebase logic and ChangeNotifier only where the UI actually needed reactive state. That kept the architecture understandable for a small team and avoided pulling in a large state-management framework before we needed one. At ~60 screens it was still workable, but the manual wiring made the trade-off visible; if the app grows much further I'd re-evaluate something like Riverpod rather than defend the original choice forever.",
-        "Rebuilding a project is worth it when the architecture no longer matches the product — rewriting just for newer technology isn't.",
+        "Rebuilding a project is worth it when the architecture no longer matches the product. Rewriting just for newer technology isn't.",
         "Role-based apps get much easier to reason about when the authorization rules are designed before the screens.",
         "Anything that represents money needs a clear source of truth outside the UI.",
         "Simple architecture is valuable, but 'simple' doesn't mean refusing to change it once the app outgrows it.",
@@ -238,14 +238,14 @@ export const projectsData: ProjectInput[] = [
       problem:
         "Every semester, students rebuild a timetable by hand: preferred times, which professor, no clashes, requirements met. It's a constraint problem solved with a spreadsheet and trial and error, and one missed conflict often isn't caught until it's too late to change sections.",
       observation:
-        "Scheduling looks simple until several constraints interact — availability, conflicts, invalid inputs, and different preferences can quickly produce a schedule that looks valid but isn't.",
+        "Scheduling looks simple until several constraints interact: availability, conflicts, invalid inputs, and different preferences can quickly produce a schedule that looks valid but isn't.",
       question:
         "Could I make scheduling conversational and easy for the user while keeping the actual scheduling rules deterministic and reliable?",
       userNeed:
         "A student needs to state preferences conversationally, trust that the result has no time clashes and respects the hard rules, and sync it to a calendar they already use. Separately, administrators want anonymised demand data to plan how many sections to open.",
       constraints: [
         "Solo build; frontend-first prototype",
-        "Scheduling logic has to be explainable — a student should see why a slot was rejected",
+        "Scheduling logic has to be explainable: a student should see why a slot was rejected",
         "Free hosting (Vercel)",
         "One core serving three audiences: general users, students, administrators",
       ],
@@ -259,7 +259,7 @@ export const projectsData: ProjectInput[] = [
           option:
             "Model extracts constraints; a rule-based engine builds and validates the schedule",
           tradeoff:
-            "More to build, but the timetable is verifiably valid and the model only does the part it's good at — understanding the sentence",
+            "More to build, but the timetable is verifiably valid and the model only does the part it's good at: understanding the sentence",
         },
       ],
       decision:
@@ -290,19 +290,19 @@ export const projectsData: ProjectInput[] = [
       observation:
         "I wanted a to-do app that didn't turn into another permanent backlog. The 'today only' rule forces me to decide what actually matters now instead of endlessly moving unfinished tasks forward.",
       question:
-        "What if the list simply couldn't hold yesterday — a clean slate every morning, with 'today' as the only scope?",
+        "What if the list simply couldn't hold yesterday: a clean slate every morning, with 'today' as the only scope?",
       userNeed:
-        "Someone needs to capture what they'll do today, check it off, and start tomorrow fresh — with no sync, no account, and it working with no signal.",
+        "Someone needs to capture what they'll do today, check it off, and start tomorrow fresh, with no sync, no account, and it working with no signal.",
       constraints: [
         "Small solo project",
-        "Fully offline — no network at all",
+        "Fully offline: no network at all",
         "Local persistence that survives app restarts but clears on a new day",
       ],
       options: [
         {
           option: "A normal persistent to-do list with a 'today' filter",
           tradeoff:
-            "Familiar, but the backlog still exists and still weighs on you — the filter is cosmetic",
+            "Familiar, but the backlog still exists and still weighs on you; the filter is cosmetic",
         },
         {
           option: "Hard-scope to today: previous days clear automatically",
@@ -314,7 +314,7 @@ export const projectsData: ProjectInput[] = [
       architecture:
         "Add task --> local store { text, done, date = today }\nApp launch --> if stored date < today: clear --> fresh list\nView --> tasks where date == today, offline, no network",
       learned: [
-        "Removing features can be a product decision too — a deliberately restrictive rule ('today only') creates clearer behaviour than giving the user unlimited flexibility.",
+        "Removing features can be a product decision too: a deliberately restrictive rule ('today only') creates clearer behaviour than giving the user unlimited flexibility.",
       ],
     },
   },
@@ -323,13 +323,13 @@ export const projectsData: ProjectInput[] = [
     slug: "goplus-research",
     name: "Go vs Go+ Research",
     tagline:
-      "Go+ layers higher-level syntax on Go's compiler and runtime — does that actually reduce what a developer writes, or is it cosmetic?",
+      "Go+ layers higher-level syntax on Go's compiler and runtime. Does that actually reduce what a developer writes, or is it cosmetic?",
     year: "2026",
     featured: false,
     stack: ["Go", "Go+", "Comparative analysis"],
     caseStudy: {
       problem:
-        "Go+ takes Go's compiler, runtime, and single-binary deployment and layers higher-level syntax on top — lambdas, list comprehensions, lighter boilerplate. The question worth studying is whether that actually reduces how much a developer has to write and reason about, or whether it's cosmetic.",
+        "Go+ takes Go's compiler, runtime, and single-binary deployment and layers higher-level syntax on top: lambdas, list comprehensions, lighter boilerplate. The question worth studying is whether that actually reduces how much a developer has to write and reason about, or whether it's cosmetic.",
       observation:
         "Go is intentionally simple, but I wanted to understand what happens when a language keeps the Go ecosystem and performance-oriented foundation while adding higher-level features like lambda expressions, list comprehensions, and simplified syntax.",
       question:
@@ -337,7 +337,7 @@ export const projectsData: ProjectInput[] = [
       userNeed:
         "Educators need a language students can be productive in quickly without dropping them off a cliff later. People doing scripting and rapid prototyping need to move fast. Both want a path that doesn't dead-end when the work turns into real systems code.",
       constraints: [
-        "A comparison is only useful with objective, repeatable criteria — not 'this feels nicer'",
+        "A comparison is only useful with objective, repeatable criteria, not 'this feels nicer'",
         "Go+ is young: smaller ecosystem, fewer libraries, less documentation",
         "Scope to representative tasks rather than survey the whole language",
       ],
@@ -345,7 +345,7 @@ export const projectsData: ProjectInput[] = [
         {
           option: "Micro-benchmark raw runtime performance Go vs Go+",
           tradeoff:
-            "Clean numbers, but Go+ compiles through Go — the runtime story is nearly identical, so it answers the wrong question",
+            "Clean numbers, but Go+ compiles through Go. The runtime story is nearly identical, so it answers the wrong question",
         },
         {
           option:
@@ -373,7 +373,7 @@ export const projectsData: ProjectInput[] = [
         },
       ],
       learned: [
-        "Language design is mostly about trade-offs — higher-level syntax makes common operations shorter and more approachable, but a language's value also depends on ecosystem, tooling, adoption, and the kind of software being built.",
+        "Language design is mostly about trade-offs. Higher-level syntax makes common operations shorter and more approachable, but a language's value also depends on ecosystem, tooling, adoption, and the kind of software being built.",
         "Go+ was interesting because it tries to make Go-style development more accessible without cutting itself off from the Go ecosystem.",
       ],
     },
@@ -400,7 +400,7 @@ export const projectsData: ProjectInput[] = [
     demo: "https://harshvardhannimesh.com",
     caseStudy: {
       problem:
-        "Most developer portfolios are the same shape: a hero section, a grid of project cards, a contact form that goes into a void. They prove you can assemble a page — not that you can notice a real problem, weigh options, and defend a decision. As a CS student applying for internships and new-grad roles, a portfolio that only listed technologies wasn't going to be the thing that got me a callback.",
+        "Most developer portfolios are the same shape: a hero section, a grid of project cards, a contact form that goes into a void. They prove you can assemble a page, not that you can notice a real problem, weigh options, and defend a decision. As a CS student applying for internships and new-grad roles, a portfolio that only listed technologies wasn't going to be the thing that got me a callback.",
       observation:
         "Every project I'd built already had the interesting part — the reasoning, the constraints, the thing that broke and how I fixed it — living only in my head or in commit messages nobody would read. The portfolio itself was also a chance to demonstrate that reasoning live, not just describe it: a recruiter using an AI scheduling assistant to book time with me is a stronger proof than a paragraph claiming I can build one.",
       question:
@@ -409,19 +409,19 @@ export const projectsData: ProjectInput[] = [
         "A recruiter has about a minute and needs to verify: can this person build real things, do they communicate clearly, and is it easy to actually talk to them. They don't want to hunt for a resume link, and they don't want to send an email into a void and wait days for a reply.",
       constraints: [
         "Solo build, done in phases alongside full-time coursework and two part-time IT jobs",
-        "Must never sacrifice usability for visual flair — a recruiter who can't find the resume link loses more than a missing animation costs",
-        "No dedicated backend budget — Vercel's free tier plus free tiers of Upstash and Resend",
+        "Must never sacrifice usability for visual flair: a recruiter who can't find the resume link loses more than a missing animation costs",
+        "No dedicated backend budget: Vercel's free tier plus free tiers of Upstash and Resend",
         "Any public AI feature is a spend and abuse surface the moment it ships, not a hypothetical one",
-        "Real personal data at stake — my own email and availability — so the scheduler couldn't just trust whatever the client sent",
+        "Real personal data at stake (my own email and availability), so the scheduler couldn't just trust whatever the client sent",
       ],
       options: [
         {
-          option: "A standard single-page portfolio — hero, project grid, contact form",
+          option: "A standard single-page portfolio: hero, project grid, contact form",
           tradeoff:
             "Fast to build and instantly familiar to a recruiter, but indistinguishable from thousands of others and says nothing about how I think",
         },
         {
-          option: "A fully 3D, WebGL-first site — everything happens inside the canvas",
+          option: "A fully 3D, WebGL-first site: everything happens inside the canvas",
           tradeoff:
             "Memorable, but risks being unusable on low-end phones, bad for SEO and accessibility, and lets the visual layer overshadow the actual content",
         },
@@ -439,7 +439,7 @@ export const projectsData: ProjectInput[] = [
       challenges: [
         {
           challenge:
-            "A public AI endpoint is an open cost and abuse surface the moment it's live — anyone can send it anything, repeatedly.",
+            "A public AI endpoint is an open cost and abuse surface the moment it's live. Anyone can send it anything, repeatedly.",
           initialApproach:
             "One Claude call per message, with a generic per-IP rate limit as the only backstop.",
           problem:
@@ -457,11 +457,11 @@ export const projectsData: ProjectInput[] = [
           initialApproach:
             "Let the model read the conversation and also state which specific times were open.",
           problem:
-            "A model has no ground truth for 'is this actually free' — a slightly-wrong or fully hallucinated time looks identical to a real one in the reply.",
+            "A model has no ground truth for 'is this actually free'. A slightly-wrong or fully hallucinated time looks identical to a real one in the reply.",
           decision:
             "Split the responsibility: the model interprets, a deterministic function decides.",
           finalSolution:
-            "The model only extracts constraints — preferred day, time of day, duration. A plain TypeScript function generates every real slot from a config file of my actual availability and re-validates the exact slot (start and end) chosen at confirm time.",
+            "The model only extracts constraints: preferred day, time of day, duration. A plain TypeScript function generates every real slot from a config file of my actual availability and re-validates the exact slot (start and end) chosen at confirm time.",
           result:
             "Every slot ever shown is provably inside my stated availability and lead time, and a stale, tampered, or duration-swapped confirm request is rejected server-side, never just trusted.",
         },
@@ -469,7 +469,7 @@ export const projectsData: ProjectInput[] = [
           challenge: "A confirmed booking with a mistyped email silently wastes everyone's time.",
           initialApproach: "A regex format check on the email, the same as most forms do.",
           problem:
-            "'jane@gmial.con' passes a format check and fails completely — the booking looks confirmed but no one can ever be reached.",
+            "'jane@gmial.con' passes a format check and fails completely. The booking looks confirmed but no one can ever be reached.",
           decision:
             "Verify the domain can actually receive mail, not just that the string looks like one.",
           finalSolution:
@@ -484,14 +484,14 @@ export const projectsData: ProjectInput[] = [
           language: "typescript",
           snippet:
             "// zero-cost gate — no model call at all\nif (PROFANITY.test(lastUserContent)) return warningResponse(priorWarnings);\n\n// cheap Haiku triage before spending Sonnet — skipped once already flagged,\n// because the full pass below then runs on Haiku anyway\nif (priorWarnings === 0) {\n  const offTopic = await triageIsOffTopic(client, turns);\n  if (offTopic === true) return warningResponse(priorWarnings);\n}\n\nconst heavyModel = priorWarnings >= 1 ? HAIKU : SONNET;",
-          why: "A public endpoint has to assume some visitors aren't real recruiters. A regex catches the obvious cases for free; a cheap Haiku call classifies everything else before the expensive model runs, so a stray or hostile message costs a fraction of a cent instead of a full Sonnet call — and a repeat offender is cut off entirely, not just slowed down.",
+          why: "A public endpoint has to assume some visitors aren't real recruiters. A regex catches the obvious cases for free; a cheap Haiku call classifies everything else before the expensive model runs, so a stray or hostile message costs a fraction of a cent instead of a full Sonnet call. A repeat offender is cut off entirely, not just slowed down.",
         },
         {
           title: "The model never gets to say what's true",
           language: "typescript",
           snippet:
             "export function findBookableSlot(config, now, startISO, endISO) {\n  const matches = generateSlots(config, now).filter(\n    (s) => s.startISO === new Date(startISO).toISOString(),\n  );\n  if (endISO) return matches.find((s) => s.endISO === new Date(endISO).toISOString()) ?? null;\n  return matches.find((s) => s.durationMin === config.durationsMin[0]) ?? matches[0] ?? null;\n}",
-          why: "Confirm re-derives every slot from the availability config and rejects anything that isn't an exact start-and-end match — so a slot can't be booked from a stale page, a tampered request, or a model's mistake. The model only ever describes availability in general terms; it never gets to assert that a specific time is free.",
+          why: "Confirm re-derives every slot from the availability config and rejects anything that isn't an exact start-and-end match, so a slot can't be booked from a stale page, a tampered request, or a model's mistake. The model only ever describes availability in general terms; it never gets to assert that a specific time is free.",
         },
       ],
       beforeAfter: [
@@ -500,15 +500,15 @@ export const projectsData: ProjectInput[] = [
           before:
             "Email, LinkedIn, and GitHub links, plus a dashed-border note promising an AI scheduling assistant 'coming in Phase 3.'",
           after:
-            "A working assistant: a recruiter states a rough day or time, sees real slots generated from my actual availability, picks one, and confirms with a full name and a domain-verified email — phone optional, and the interface states exactly what's required before it's required.",
+            "A working assistant: a recruiter states a rough day or time, sees real slots generated from my actual availability, picks one, and confirms with a full name and a domain-verified email (phone optional), and the interface states exactly what's required before it's required.",
           reason:
-            "The plan called for the scheduler to be a project in its own right, not just a form embedded in a page — so it had to actually ship inside the site it's promoted on, not stay a placeholder note.",
+            "The plan called for the scheduler to be a project in its own right, not just a form embedded in a page, so it had to actually ship inside the site it's promoted on, not stay a placeholder note.",
         },
       ],
       learned: [
         "The pattern that made every AI feature on this site trustworthy is the same one, twice: the model interprets, and a small deterministic function decides. That split matters more once a feature is public and someone will eventually try to break it.",
         "Shipping in three phases — a plain, recruiter-ready site first, then the interactive layer, then the reasoning and the AI feature — meant the site was never in a half-finished state if someone found it early. Each phase had to stand on its own.",
-        "A public endpoint isn't done when it works for a good-faith visitor. The off-topic cutoff and the DNS email check both came from watching a handful of adversarial test messages get through — that's the traffic to assume before shipping, not after.",
+        "A public endpoint isn't done when it works for a good-faith visitor. The off-topic cutoff and the DNS email check both came from watching a handful of adversarial test messages get through. That's the traffic to assume before shipping, not after.",
         "The domain, DNS, deployment protection, and email delivery are their own small system with their own failure modes, separate from code that ran fine on localhost. Testing has to include that system, not stop at 'it works on my machine.'",
       ],
     },

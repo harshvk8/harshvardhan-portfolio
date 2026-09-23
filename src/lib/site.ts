@@ -12,7 +12,7 @@ export const siteConfig = {
   tagline:
     "I'm a computer science student who builds practical software to solve everyday problems.",
   description:
-    "Portfolio of Harshvardhan Kumar Nimesh — a Computer Science student at Montclair State University and software developer. See how I notice problems, reason through them, make engineering decisions, and build.",
+    "Portfolio of Harshvardhan Kumar Nimesh, a Computer Science student at Montclair State University and software developer. See how I notice problems, reason through them, make engineering decisions, and build.",
   // Overridden per-environment by NEXT_PUBLIC_SITE_URL; `||` so an empty
   // value (e.g. a blank Vercel env var) still falls back instead of
   // producing `new URL("")`.
