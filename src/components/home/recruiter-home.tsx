@@ -58,7 +58,10 @@ export function RecruiterHome() {
               <h2 className="text-accent font-mono text-xs tracking-widest uppercase">
                 Featured projects
               </h2>
-              <p className="text-muted mt-2">Chosen for what they demonstrate.</p>
+              <p className="text-muted mt-2">
+                Projects that demonstrate my skills in mobile development, full-stack engineering,
+                and problem-solving.
+              </p>
             </div>
             <Link
               href="/projects"

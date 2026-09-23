@@ -108,7 +108,7 @@ export const projectsData: ProjectInput[] = [
     slug: "red-hawk-wallet-flutter",
     name: "Red Hawk Wallet (Flutter)",
     tagline:
-      "The Android build was student-only, Android-only, and trusted the client with money. The rebuild is a three-sided campus marketplace — student, vendor, admin — on iOS and Android.",
+      "A Flutter rebuild of Red Hawk Wallet as a three-sided campus marketplace — student, vendor, admin — on iOS and Android. The original Android prototype updated balances on the client; this version moved that to the server.",
     year: "2026",
     featured: true,
     stack: [
