@@ -5,12 +5,15 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
+import { useMode } from "@/components/mode/mode-provider";
 import { projects } from "@/content";
 import { siteConfig } from "@/lib/site";
 import { planetLayout } from "@/lib/universe";
 import { useIsMobile, usePrefersReducedMotion } from "@/lib/use-media";
+import { hasWebGL } from "@/lib/webgl";
 import { MobileUniverse } from "./mobile-universe";
 import { OpeningSequence } from "./opening-sequence";
+import { UniverseErrorBoundary } from "./universe-error-boundary";
 import { UniverseLoader } from "./universe-loader";
 
 const UniverseScene = dynamic(() => import("./universe-scene"), {
@@ -23,9 +26,14 @@ type EnterTarget = { kind: "project"; slug: string } | { kind: "about" };
 
 export function UniverseHome() {
   const router = useRouter();
+  const { setMode } = useMode();
   const isMobile = useIsMobile();
   const reducedMotion = usePrefersReducedMotion();
   const [entering, setEntering] = useState<EnterTarget | null>(null);
+  // Checked once per mount — this component only ever renders client-side
+  // (RecruiterHome is the SSR/first-paint default), so there's no hydration
+  // mismatch to worry about here.
+  const supportsWebGL = useMemo(() => hasWebGL(), []);
 
   const planets = useMemo(() => planetLayout(projects), []);
 
@@ -44,6 +52,9 @@ export function UniverseHome() {
   }
 
   if (isMobile) return <MobileUniverse />;
+  // No WebGL (disabled, unsupported, some sandboxed browsers): the 3D canvas
+  // would otherwise render as a blank central area with no explanation.
+  if (!supportsWebGL) return <MobileUniverse />;
 
   const enteringSlug = entering?.kind === "project" ? entering.slug : null;
 
@@ -69,14 +80,31 @@ export function UniverseHome() {
         </ul>
       </nav>
 
-      <UniverseScene
-        planets={planets}
-        reducedMotion={reducedMotion}
-        enteringSlug={enteringSlug}
-        entering={entering != null}
-        onEnter={(slug) => enter({ kind: "project", slug })}
-        onOpenAbout={() => enter({ kind: "about" })}
-      />
+      <UniverseErrorBoundary
+        fallback={
+          <div className="grid h-full place-items-center p-6 text-center">
+            <div className="max-w-xs">
+              <p className="text-muted text-sm">The 3D view couldn&apos;t load in this browser.</p>
+              <button
+                type="button"
+                onClick={() => setMode("recruiter")}
+                className="border-border hover:bg-surface mt-3 inline-flex items-center gap-2 rounded-md border px-3 py-1.5 text-sm"
+              >
+                Switch to Recruiter Mode
+              </button>
+            </div>
+          </div>
+        }
+      >
+        <UniverseScene
+          planets={planets}
+          reducedMotion={reducedMotion}
+          enteringSlug={enteringSlug}
+          entering={entering != null}
+          onEnter={(slug) => enter({ kind: "project", slug })}
+          onOpenAbout={() => enter({ kind: "about" })}
+        />
+      </UniverseErrorBoundary>
 
       <OpeningSequence reducedMotion={reducedMotion} />
 

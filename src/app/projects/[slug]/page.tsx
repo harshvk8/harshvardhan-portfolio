@@ -89,7 +89,7 @@ export default async function ProjectPage({ params }: PageProps<"/projects/[slug
         <ProjectEmbed
           src={project.embedDemo}
           title={`${project.name} — live app`}
-          blurb="The deployed app, running here. Talk to the assistant and build a timetable — no sign-in to look around."
+          blurb="The deployed app, running here. Talk to the assistant and build a timetable. No sign-in needed to look around."
         />
       ) : null}
 

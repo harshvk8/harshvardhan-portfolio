@@ -21,7 +21,7 @@ type Msg = {
 };
 
 const GREETING =
-  "Tell me roughly when works — a day, a week, mornings vs. afternoons — and I'll pull up open times for a call with Harshvardhan.";
+  "Tell me roughly when works, like a day, a week, or mornings vs. afternoons, and I'll pull up open times for a call with Harshvardhan.";
 
 const uid = () =>
   typeof crypto !== "undefined" && crypto.randomUUID

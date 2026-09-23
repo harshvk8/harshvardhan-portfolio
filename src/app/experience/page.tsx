@@ -8,7 +8,7 @@ import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Experience",
-  description: `A journey through the environments that changed how ${siteConfig.name} works — retail operations, AI evaluation, IT support, and building software.`,
+  description: `A journey through the environments that changed how ${siteConfig.name} works: retail operations, AI evaluation, IT support, and building software.`,
 };
 
 export default function ExperiencePage() {
@@ -16,7 +16,7 @@ export default function ExperiencePage() {
     <Container className="py-16">
       <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">Experience</h1>
       <p className="text-muted mt-3 max-w-2xl">
-        Less a résumé timeline, more a journey through environments that each changed how I work —
+        Less a résumé timeline, more a journey through environments that each changed how I work,
         ending at the one I&apos;m headed toward.
       </p>
 
