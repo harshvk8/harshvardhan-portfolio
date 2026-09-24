@@ -62,7 +62,7 @@ export function UniverseHome() {
     <section className="relative h-[calc(100svh-3.5rem)] w-full overflow-hidden">
       {/* Accessible, non-visual routes */}
       <h1 className="sr-only">
-        {siteConfig.name} — {siteConfig.role}. Explore my projects as an interactive solar system,
+        {siteConfig.name} · {siteConfig.role}. Explore my projects as an interactive solar system,
         or switch to Recruiter Mode from the header.
       </h1>
       <nav aria-label="Explore" className="sr-only">
@@ -73,7 +73,7 @@ export function UniverseHome() {
           {projects.map((project) => (
             <li key={project.slug}>
               <Link href={`/projects/${project.slug}`}>
-                {project.name} — {project.tagline}
+                {project.name} · {project.tagline}
               </Link>
             </li>
           ))}

@@ -9,13 +9,13 @@ import "./globals.css";
 const geistSans = Geist({ subsets: ["latin"], variable: "--font-geist-sans" });
 const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono" });
 
-const title = `${siteConfig.name} — ${siteConfig.role}`;
+const title = `${siteConfig.name} · ${siteConfig.role}`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
     default: title,
-    template: `%s — ${siteConfig.name}`,
+    template: `%s · ${siteConfig.name}`,
   },
   description: siteConfig.description,
   applicationName: siteConfig.name,

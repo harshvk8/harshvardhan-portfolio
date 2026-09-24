@@ -6,9 +6,13 @@ import { publicFileExists } from "@/lib/assets";
 import { constellations, experience } from "@/content";
 import { siteConfig } from "@/lib/site";
 
+const description = `Resume for ${siteConfig.name}, ${siteConfig.role}. View or download the PDF.`;
+
 export const metadata: Metadata = {
   title: "Resume",
-  description: `Resume for ${siteConfig.name} — ${siteConfig.role}. View or download the PDF.`,
+  description,
+  alternates: { canonical: "/resume" },
+  openGraph: { title: `Resume · ${siteConfig.name}`, description, url: "/resume" },
 };
 
 export default function ResumePage() {
@@ -22,7 +26,7 @@ export default function ResumePage() {
     <Container width="prose" className="py-16">
       <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">Resume</h1>
       <p className="text-muted mt-3">
-        Prefer the traditional format? Here&apos;s my one-page resume — everything else on this site
+        Prefer the traditional format? Here&apos;s my one-page resume. Everything else on this site
         is the longer, fuller answer.
       </p>
 
@@ -58,7 +62,7 @@ export default function ResumePage() {
           <div className="grid gap-1 sm:grid-cols-[8rem_1fr]">
             <dt className="text-muted">Education</dt>
             <dd>
-              {siteConfig.education.degree} — {siteConfig.education.institution},{" "}
+              {siteConfig.education.degree}, {siteConfig.education.institution},{" "}
               {siteConfig.education.location} ({siteConfig.education.period})
             </dd>
           </div>
@@ -69,7 +73,7 @@ export default function ResumePage() {
           {realRoles.length > 0 ? (
             <div className="grid gap-1 sm:grid-cols-[8rem_1fr]">
               <dt className="text-muted">Experience</dt>
-              <dd>{realRoles.map((e) => `${e.role} — ${e.org}`).join("; ")}</dd>
+              <dd>{realRoles.map((e) => `${e.role}, ${e.org}`).join("; ")}</dd>
             </div>
           ) : null}
           <div className="grid gap-1 sm:grid-cols-[8rem_1fr]">

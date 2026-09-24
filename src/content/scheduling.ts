@@ -101,9 +101,10 @@ const schedulingData: z.input<typeof schedulingConfigSchema> = {
   horizonDays: 14,
   blackoutDates: [],
   notes:
-    "Weekday openings are the late-morning gap between classes; Monday afternoons are wide open. " +
-    "Wednesday and Friday only work in the evening. Weekend calls (Sat/Sun) are remote while he's " +
-    "working — audio is easiest, video is possible but harder.",
+    "The late-morning gap between classes is open Monday through Thursday; Monday afternoons are " +
+    "wide open too. Wednesday also has an evening window after bio lab. Friday only works in the " +
+    "evening. Weekend calls (Sat/Sun) are remote while he's working, so audio is easiest; video is " +
+    "possible but harder.",
 };
 
 export const schedulingConfig = schedulingConfigSchema.parse(schedulingData);

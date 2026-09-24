@@ -6,9 +6,13 @@ import { Reveal } from "@/components/reveal";
 import { experience, getProject } from "@/content";
 import { siteConfig } from "@/lib/site";
 
+const description = `A journey through the environments that changed how ${siteConfig.name} works: retail operations, AI evaluation, IT support, and building software.`;
+
 export const metadata: Metadata = {
   title: "Experience",
-  description: `A journey through the environments that changed how ${siteConfig.name} works: retail operations, AI evaluation, IT support, and building software.`,
+  description,
+  alternates: { canonical: "/experience" },
+  openGraph: { title: `Experience · ${siteConfig.name}`, description, url: "/experience" },
 };
 
 export default function ExperiencePage() {
@@ -29,7 +33,7 @@ export default function ExperiencePage() {
             />
             <Reveal>
               <p className="text-accent font-mono text-xs tracking-widest uppercase">
-                Stage {i + 1} — {stage.theme}
+                Stage {i + 1} · {stage.theme}
               </p>
               <div className="mt-1.5 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
                 <h2 className="text-lg font-medium">

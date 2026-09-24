@@ -5,9 +5,13 @@ import { Scheduler } from "@/components/contact/scheduler";
 import { GitHubIcon, LinkedInIcon } from "@/components/icons";
 import { siteConfig } from "@/lib/site";
 
+const description = `Get in touch with ${siteConfig.name} by email, LinkedIn, or GitHub.`;
+
 export const metadata: Metadata = {
   title: "Contact",
-  description: `Get in touch with ${siteConfig.name} by email, LinkedIn, or GitHub.`,
+  description,
+  alternates: { canonical: "/contact" },
+  openGraph: { title: `Contact · ${siteConfig.name}`, description, url: "/contact" },
 };
 
 const methods = [

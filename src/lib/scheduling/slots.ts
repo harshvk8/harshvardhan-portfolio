@@ -214,7 +214,11 @@ export function filterSlots(
   const wantDuration = validDurations.has(c.durationMin) ? c.durationMin : 0;
 
   const byDate = (s: MeetingSlot) => {
-    const date = s.startISO.slice(0, 10);
+    // The calendar date in the configured timezone, not a slice of the UTC
+    // ISO string — an evening ET slot can already be past midnight UTC, so
+    // slicing would file it under the wrong day near that boundary.
+    const { y, m, d } = ymdInZone(config.timezone, new Date(s.startISO));
+    const date = isoDate(y, m, d);
     if (c.earliestDate && date < c.earliestDate) return false;
     if (c.latestDate && date > c.latestDate) return false;
     return true;
@@ -279,10 +283,19 @@ export function findBookableSlot(
   const start = new Date(startISO);
   if (Number.isNaN(start.getTime())) return null;
   const wantStart = start.toISOString();
-  const wantEnd = endISO ? new Date(endISO).toISOString() : null;
+
+  // .toISOString() throws on an invalid Date rather than returning a
+  // sentinel string, so validate before calling it.
+  let wantEnd: string | null = null;
+  if (endISO) {
+    const end = new Date(endISO);
+    if (Number.isNaN(end.getTime())) return null;
+    wantEnd = end.toISOString();
+  }
+
   const matches = generateSlots(config, now).filter((s) => s.startISO === wantStart);
   if (matches.length === 0) return null;
-  if (wantEnd && wantEnd !== "Invalid Date") {
+  if (wantEnd) {
     return matches.find((s) => s.endISO === wantEnd) ?? null;
   }
   // No end given: prefer the default (first configured) duration.
