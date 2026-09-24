@@ -42,7 +42,7 @@ export const siteConfig = {
 
   about: {
     intro:
-      "I'm a Computer Science student and software developer who likes turning everyday problems into systems I can test, simplify, and improve. I usually start by understanding the problem and its constraints, then make technical decisions based on what the product actually needs instead of choosing complexity for its own sake. I care about building software that is useful, understandable, and reliable.",
+      "I'm a computer science student and software developer who enjoys building software that solves everyday problems. I start by understanding what people need, then design, build, and test solutions that are practical and easy to use. My projects focus on mobile apps, web development, and automation, with an emphasis on reliability and a clear user experience.",
     interests:
       "Mobile and full-stack applications, practical automation, AI-assisted tools, and products where architecture, user experience, security, and data flow all matter.",
     direction:
