@@ -22,7 +22,7 @@ export const experienceData: ExperienceInput[] = [
       "Working in a fast-moving retail environment taught me how to communicate with different people, handle multiple priorities, and solve problems while operations continue around me.",
   },
   {
-    org: "Handshake AI — Project Hedgehog",
+    org: "Handshake AI · Project Hedgehog",
     role: "Annotator",
     period: "Jan 2026 – Present",
     kind: "work",
@@ -66,7 +66,7 @@ export const experienceData: ExperienceInput[] = [
       "Working from a problem, not a spec",
     ],
     story:
-      "Moving from solving individual technical problems to designing complete systems — choosing the data model, the trust boundary, the platform — and living with those decisions as the projects grew.",
+      "Moving from solving individual technical problems to designing complete systems (choosing the data model, the trust boundary, the platform) and living with those decisions as the projects grew.",
     projects: [
       "red-hawk-wallet-flutter",
       "red-hawk-wallet-android",

@@ -70,7 +70,7 @@ export function SiteHeader() {
         <Link
           href="/"
           className="font-mono text-sm font-semibold tracking-tight"
-          aria-label={`${siteConfig.name} — home`}
+          aria-label={`${siteConfig.name} · home`}
         >
           {siteConfig.shortName}
           <span className="text-accent">.</span>

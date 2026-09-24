@@ -129,7 +129,7 @@ export const constellationsData: ConstellationInput[] = [
         id: "sql",
         name: "SQL",
         size: "md",
-        evidence: ["Relational modelling and queries in coursework", "MySQL exercises"],
+        evidence: ["Relational modeling and queries in coursework", "MySQL exercises"],
       },
       { id: "c", name: "C", size: "sm", evidence: ["Systems-level coursework"] },
       {
@@ -214,7 +214,7 @@ export const constellationsData: ConstellationInput[] = [
         id: "nosql",
         name: "NoSQL",
         size: "sm",
-        evidence: ["Document modelling shaped around the queries the UI needs (Firestore)"],
+        evidence: ["Document modeling shaped around the queries the UI needs (Firestore)"],
         projects: ["red-hawk-wallet-android"],
       },
       { id: "mysql", name: "MySQL", size: "sm", evidence: ["Relational database coursework"] },
@@ -312,7 +312,7 @@ export const constellationsData: ConstellationInput[] = [
     name: "Engineering in the Real World",
     scale: 0.8,
     description:
-      "Skills from real work: how I operate on a team, diagnose problems, communicate with users, evaluate systems, and work under constraints. They support the developer, not replace it.",
+      "Skills from real work: how I operate on a team, diagnose problems, communicate with users, evaluate systems, and work under constraints. These skills strengthen my work as a developer.",
     skills: [
       {
         id: "troubleshooting",

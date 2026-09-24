@@ -28,7 +28,7 @@ export async function generateMetadata({
     description: project.tagline,
     alternates: { canonical: `/projects/${project.slug}` },
     openGraph: {
-      title: `${project.name} — ${siteConfig.name}`,
+      title: `${project.name} · ${siteConfig.name}`,
       description: project.tagline,
       url: `/projects/${project.slug}`,
     },
@@ -88,7 +88,7 @@ export default async function ProjectPage({ params }: PageProps<"/projects/[slug
       {project.embedDemo ? (
         <ProjectEmbed
           src={project.embedDemo}
-          title={`${project.name} — live app`}
+          title={`${project.name} · live app`}
           blurb="The deployed app, running here. Talk to the assistant and build a timetable. No sign-in needed to look around."
         />
       ) : null}

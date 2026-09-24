@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: "Skills",
   description,
   alternates: { canonical: "/skills" },
-  openGraph: { title: `Skills — ${siteConfig.name}`, description, url: "/skills" },
+  openGraph: { title: `Skills · ${siteConfig.name}`, description, url: "/skills" },
 };
 
 export default function SkillsPage() {
@@ -18,8 +18,8 @@ export default function SkillsPage() {
       <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">Skills</h1>
       <p className="text-muted mt-3 max-w-2xl">
         What I can build with, and the evidence that I&apos;ve actually used it. Five constellations
-        with Software Engineering at the centre. No proficiency percentages; every star links to a
-        project or a role.
+        with Software Engineering at the center. No proficiency percentages. Select a skill to see
+        where I have used it.
       </p>
       <SkillsExplorer />
     </Container>

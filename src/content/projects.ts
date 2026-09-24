@@ -100,7 +100,7 @@ export const projectsData: ProjectInput[] = [
           language: "kotlin",
           snippet:
             "data class OfflineToken(\n  val tokenId: String,     // UUID\n  val userId: String,\n  val amountCents: Long,    // spend cap\n  val issuedAt: Long,\n  val expiresAt: Long,     // short TTL\n  val signature: String,   // server-signed (mock for now)\n)\n// EncryptedSharedPreferences: available_tokens / used_tokens\n// spend: move available -> used, send over NFC; a server call redeems it against the real balance",
-          why: "The token carries its own guardrails — a fixed amount, a short expiry, and a signature to check — so a payment can be authorised on the device and reconciled against the real balance when it's redeemed server-side. Whatever a token can spend is capped and time-boxed, so the exposure from a lost or copied token is bounded.",
+          why: "The token carries its own guardrails (a fixed amount, a short expiry, and a signature to check), so a payment can be authorized on the device and reconciled against the real balance when it's redeemed server-side. Whatever a token can spend is capped and time-boxed, so the exposure from a lost or copied token is bounded.",
         },
       ],
       learned: [
@@ -116,7 +116,7 @@ export const projectsData: ProjectInput[] = [
     slug: "red-hawk-wallet-flutter",
     name: "Red Hawk Wallet (Flutter)",
     tagline:
-      "A Flutter rebuild of Red Hawk Wallet as a three-sided campus marketplace — student, vendor, admin — on iOS and Android. The original Android prototype updated balances on the client; this version moved that to the server.",
+      "A Flutter rebuild of Red Hawk Wallet as a three-sided campus marketplace (student, vendor, admin) on iOS and Android. The original Android prototype updated balances on the client; this version moved that to the server.",
     year: "2026",
     featured: true,
     stack: [
@@ -198,7 +198,7 @@ export const projectsData: ProjectInput[] = [
         },
         {
           challenge:
-            "Three roles — student, vendor, admin — but one app, and a vendor must not be able to reach admin screens (or vice versa).",
+            "Three roles (student, vendor, admin), but one app, and a vendor must not be able to reach admin screens (or vice versa).",
           initialApproach: "Ship separate builds, or hide the other roles' screens in the UI.",
           problem:
             "Separate builds triple the release work; hiding screens in the UI isn't a security boundary. The routes still exist and Firestore is still one database.",
@@ -287,13 +287,13 @@ export const projectsData: ProjectInput[] = [
         },
       ],
       decision:
-        "The model's job stops at turning messages into structured constraints. A rule-based layer does placement, validation, and conflict detection, so every schedule returned is provably free of time clashes and honours the hard rules. The conversation is the interface; correctness is not the model's responsibility. Object-oriented constraint and validator types are reusable across the general-user, student, and admin modes.",
+        "The model's job stops at turning messages into structured constraints. A rule-based layer does placement, validation, and conflict detection, so every schedule returned is provably free of time clashes and honors the hard rules. The conversation is the interface; correctness is not the model's responsibility. Object-oriented constraint and validator types are reusable across the general-user, student, and admin modes.",
       architecture:
         "Chat message\n  --> extract structured constraints { times, days, professors, hard vs soft }\n  --> rule engine: place courses, run conflict detection, reject on overlap or hard-rule break\n  --> timetable state (updates continuously — no separate 'generate' step)\n        --> Google Calendar / in-app calendar sync\n        --> admin view: anonymised, aggregated demand",
       learned: [
         "Building and deploying it pushed me to separate the conversational experience from the rules that decide whether a schedule is valid. Input validation and conflict detection have to stay predictable even if a model is eventually doing the understanding.",
         "Deployment made configuration, failure states, and validation matter far more than they do when an app only runs locally.",
-        "This portfolio's Contact page now runs a scheduling assistant built on the same split: Claude Sonnet turns a recruiter's message into constraints, and a deterministic engine generates real meeting slots from my availability and re-validates the chosen one on confirm. The model never invents a time — same principle as ScheduleAI, narrowed to booking one call.",
+        "This portfolio's Contact page now runs a scheduling assistant built on the same split: Claude Sonnet turns a recruiter's message into constraints, and a deterministic engine generates real meeting slots from my availability and re-validates the chosen one on confirm. The model never invents a time, following the same principle as ScheduleAI, narrowed to booking one call.",
       ],
     },
   },
@@ -344,7 +344,7 @@ export const projectsData: ProjectInput[] = [
       architecture:
         "Add task --> local store { text, done, date = today }\nApp launch --> if stored date < today: clear --> fresh list\nView --> tasks where date == today, offline, no network",
       learned: [
-        "Removing features can be a product decision too: a deliberately restrictive rule ('today only') creates clearer behaviour than giving the user unlimited flexibility.",
+        "Removing features can be a product decision too: a deliberately restrictive rule ('today only') creates clearer behavior than giving the user unlimited flexibility.",
       ],
     },
   },
@@ -388,7 +388,7 @@ export const projectsData: ProjectInput[] = [
           option:
             "Compare language features and their effect on readability and development effort",
           tradeoff:
-            "Measures the thing that actually differs — the human side — but needs care to keep the criteria consistent",
+            "Measures the thing that actually differs (the human side), but needs care to keep the criteria consistent",
         },
         {
           option: "Survey ecosystem maturity and library coverage",
@@ -447,9 +447,9 @@ export const projectsData: ProjectInput[] = [
       problem:
         "Most developer portfolios are the same shape: a hero section, a grid of project cards, a contact form that goes into a void. They prove you can assemble a page, not that you can notice a real problem, weigh options, and defend a decision. As a CS student applying for internships and new-grad roles, a portfolio that only listed technologies wasn't going to be the thing that got me a callback.",
       observation:
-        "Every project I'd built already had the interesting part — the reasoning, the constraints, the thing that broke and how I fixed it — living only in my head or in commit messages nobody would read. The portfolio itself was also a chance to demonstrate that reasoning live, not just describe it: a recruiter using an AI scheduling assistant to book time with me is a stronger proof than a paragraph claiming I can build one.",
+        "Every project I'd built already had the interesting part (the reasoning, the constraints, the thing that broke and how I fixed it), living only in my head or in commit messages nobody would read. The portfolio itself was also a chance to demonstrate that reasoning live, not just describe it: a recruiter using an AI scheduling assistant to book time with me is a stronger proof than a paragraph claiming I can build one.",
       question:
-        "Could the portfolio be a piece of software that shows how I think — problem, reasoning, decision, result — while still working, in under a minute, for a recruiter who just wants my resume and a way to reach me?",
+        "Could the portfolio be a piece of software that shows how I think (problem, reasoning, decision, result) while still working, in under a minute, for a recruiter who just wants my resume and a way to reach me?",
       userNeed:
         "A recruiter has about a minute and needs to verify: can this person build real things, do they communicate clearly, and is it easy to actually talk to them. They don't want to hunt for a resume link, and they don't want to send an email into a void and wait days for a reply.",
       constraints: [
@@ -474,11 +474,11 @@ export const projectsData: ProjectInput[] = [
           option:
             "A conventional site by default, with a 3D layer as an additive, skippable experience",
           tradeoff:
-            "More to build — two coordinated presentations of the same content — but the content never depends on the 3D layer working",
+            "More to build (two coordinated presentations of the same content), but the content never depends on the 3D layer working",
         },
       ],
       decision:
-        "I built it in three deliberate phases — make it work, make it memorable, make it demonstrate how I think — so at every point there was a shippable, recruiter-usable site, and the universe/3D layer was additive on top of it, never a gate in front of it. Concretely: Next.js with content validated by Zod at build time (a broken case study fails `next build`, not the live site), an explicit low-animation Recruiter Mode next to the 3D Explore Mode, a scheduling assistant built on a model-extracts / engine-decides split rather than a bare chatbot wired to an API key, and real cost and abuse controls on every public AI endpoint before it shipped, not after someone found the gap.",
+        "I built it in three deliberate phases: make it work, make it memorable, make it demonstrate how I think. At every point there was a shippable, recruiter-usable site, and the universe/3D layer was additive on top of it, never a gate in front of it. Concretely: Next.js with content validated by Zod at build time (a broken case study fails `next build`, not the live site), an explicit low-animation Recruiter Mode next to the 3D Explore Mode, a scheduling assistant built on a model-extracts / engine-decides split rather than a bare chatbot wired to an API key, and real cost and abuse controls on every public AI endpoint before it shipped, not after someone found the gap.",
       architecture:
         "Root layout\n  ModeProvider (localStorage + prefers-reduced-motion default) picks Explore vs Recruiter\n    Explore: 3D universe (React Three Fiber, code-split, ssr:false) on desktop;\n             simplified vertical Sun + planet-cards layout on mobile\n    Recruiter: plain fast layout, identical content, no 3D at all\n\nContent: src/content/*.ts --Zod--> parsed once at module load\n  a malformed project / experience / skill entry fails the build, not the page\n\nContact -> AI scheduling assistant\n  chat message -> POST /api/schedule\n    profanity regex -> cheap Haiku triage -> off-topic: warn/close, Sonnet never spent\n    on-topic -> Sonnet (Haiku once already warned) extracts constraints only\n  deterministic engine (lib/scheduling/slots.ts) generates every real slot from\n    src/content/scheduling.ts and filters by those constraints; the model never\n    states or invents a specific time\n  pick a slot -> POST /api/schedule/confirm\n    re-derives the exact slot (rejects stale/tampered), verifies the email\n    domain resolves (MX / A record, blocks disposable domains), notifies me by\n    email (Resend), returns Google Calendar + .ics links to the visitor",
       challenges: [
@@ -492,7 +492,7 @@ export const projectsData: ProjectInput[] = [
           decision:
             "Classify before spending, and never trust the client's account of the conversation.",
           finalSolution:
-            "A blunt profanity regex and a cheap Haiku triage pass gate every message before the full Sonnet call ever runs. Two off-topic warnings — counted by scanning the transcript for a fixed marker string the server itself writes, not a client-supplied counter — close the conversation server-side and stop calling any model at all.",
+            "A blunt profanity regex and a cheap Haiku triage pass gate every message before the full Sonnet call ever runs. Two off-topic warnings (counted by scanning the transcript for a fixed marker string the server itself writes, not a client-supplied counter) close the conversation server-side and stop calling any model at all.",
           result:
             "A bad-faith session now costs a small fraction of what a real conversation costs, and can't be talked past by editing the message history sent from the browser.",
         },
@@ -552,7 +552,7 @@ export const projectsData: ProjectInput[] = [
       ],
       learned: [
         "The pattern that made every AI feature on this site trustworthy is the same one, twice: the model interprets, and a small deterministic function decides. That split matters more once a feature is public and someone will eventually try to break it.",
-        "Shipping in three phases — a plain, recruiter-ready site first, then the interactive layer, then the reasoning and the AI feature — meant the site was never in a half-finished state if someone found it early. Each phase had to stand on its own.",
+        "Shipping in three phases (a plain, recruiter-ready site first, then the interactive layer, then the reasoning and the AI feature) meant the site was never in a half-finished state if someone found it early. Each phase had to stand on its own.",
         "A public endpoint isn't done when it works for a good-faith visitor. The off-topic cutoff and the DNS email check both came from watching a handful of adversarial test messages get through. That's the traffic to assume before shipping, not after.",
         "The domain, DNS, deployment protection, and email delivery are their own small system with their own failure modes, separate from code that ran fine on localhost. Testing has to include that system, not stop at 'it works on my machine.'",
       ],

@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   title: "Projects",
   description,
   alternates: { canonical: "/projects" },
-  openGraph: { title: `Projects — ${siteConfig.name}`, description, url: "/projects" },
+  openGraph: { title: `Projects · ${siteConfig.name}`, description, url: "/projects" },
 };
 
 export default function ProjectsPage() {

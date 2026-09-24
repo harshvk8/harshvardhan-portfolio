@@ -149,9 +149,8 @@ export function Scheduler() {
         </div>
         <p className="text-muted mt-2 text-sm">
           Talk through a time in a couple of lines instead of an email thread. It reads your
-          preferred day and time, then shows real open slots. You can view available times
-          without entering personal details; sending a meeting request needs your full name and
-          email.
+          preferred day and time, then shows real open slots. You can view available times without
+          entering personal details; sending a meeting request needs your name and email.
         </p>
         <button
           type="button"
@@ -302,15 +301,15 @@ export function Scheduler() {
             min)
           </p>
           <p className="text-muted mt-1 text-xs">
-            Required to send this request: your full name and email.
+            Required to send this request: your name and email.
           </p>
           <div className="mt-3 grid gap-2 sm:grid-cols-2">
             <label className="block">
-              <span className="sr-only">Your full name</span>
+              <span className="sr-only">Your name</span>
               <input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Full name (first and last) *"
+                placeholder="Your name *"
                 autoComplete="name"
                 className="border-border bg-background focus:border-accent w-full rounded-md border px-3 py-2 text-sm outline-none"
               />
@@ -351,11 +350,7 @@ export function Scheduler() {
             <button
               type="button"
               onClick={confirm}
-              disabled={
-                confirming ||
-                name.trim().split(/\s+/).filter(Boolean).length < 2 ||
-                !email.includes("@")
-              }
+              disabled={confirming || name.trim().length < 2 || !email.includes("@")}
               className="bg-accent text-accent-foreground inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-[filter] hover:brightness-110 disabled:opacity-50"
             >
               {confirming ? (

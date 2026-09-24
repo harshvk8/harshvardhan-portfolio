@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   title: "About",
   description,
   alternates: { canonical: "/about" },
-  openGraph: { title: `About — ${siteConfig.name}`, description, url: "/about" },
+  openGraph: { title: `About · ${siteConfig.name}`, description, url: "/about" },
 };
 
 const PHOTO = "harshvardhan.jpg";

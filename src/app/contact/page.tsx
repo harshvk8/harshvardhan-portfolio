@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   title: "Contact",
   description,
   alternates: { canonical: "/contact" },
-  openGraph: { title: `Contact — ${siteConfig.name}`, description, url: "/contact" },
+  openGraph: { title: `Contact · ${siteConfig.name}`, description, url: "/contact" },
 };
 
 const methods = [

@@ -214,7 +214,11 @@ export function filterSlots(
   const wantDuration = validDurations.has(c.durationMin) ? c.durationMin : 0;
 
   const byDate = (s: MeetingSlot) => {
-    const date = s.startISO.slice(0, 10);
+    // The calendar date in the configured timezone, not a slice of the UTC
+    // ISO string — an evening ET slot can already be past midnight UTC, so
+    // slicing would file it under the wrong day near that boundary.
+    const { y, m, d } = ymdInZone(config.timezone, new Date(s.startISO));
+    const date = isoDate(y, m, d);
     if (c.earliestDate && date < c.earliestDate) return false;
     if (c.latestDate && date > c.latestDate) return false;
     return true;

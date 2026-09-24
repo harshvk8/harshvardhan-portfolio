@@ -215,9 +215,10 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   const startISO = typeof b.slot?.startISO === "string" ? b.slot.startISO : "";
   const endISO = typeof b.slot?.endISO === "string" ? b.slot.endISO : undefined;
 
-  const nameParts = name.split(/\s+/).filter((p) => /\p{L}/u.test(p));
-  if (nameParts.length < 2 || name.length > 100) {
-    return NextResponse.json({ error: "Please enter your first and last name." }, { status: 400 });
+  // A single name is a real name (mononyms exist) — just require it to look
+  // like a name: some letters, a sane length. Not a strict "two words" rule.
+  if (name.length < 2 || name.length > 100 || !/\p{L}/u.test(name)) {
+    return NextResponse.json({ error: "Please enter your name." }, { status: 400 });
   }
 
   if (!EMAIL_RE.test(email) || email.length > 200) {
