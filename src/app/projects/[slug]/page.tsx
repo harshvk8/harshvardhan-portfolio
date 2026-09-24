@@ -89,19 +89,8 @@ export default async function ProjectPage({ params }: PageProps<"/projects/[slug
         <ProjectEmbed
           src={project.embedDemo}
           title={`${project.name} — live app`}
-          blurb="The deployed app, running here. Talk to the assistant and build a timetable. No sign-in needed to look around."
+          blurb="Open ScheduleAI to explore the planner."
         />
-      ) : null}
-
-      {project.repo ? (
-        <div className="border-border bg-surface mt-10 rounded-lg border p-5">
-          <p className="text-foreground/90 text-sm">
-            This page explains the <em>why</em>. GitHub has the proof of what was built.
-          </p>
-          <ButtonAnchor href={project.repo} className="mt-3">
-            <GitHubIcon className="h-4 w-4" /> View full repository
-          </ButtonAnchor>
-        </div>
       ) : null}
 
       <nav className="border-border mt-12 flex items-stretch justify-between gap-4 border-t pt-6">

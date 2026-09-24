@@ -5,22 +5,11 @@ import { z } from "zod";
  * `skills.ts` is parsed against these at module load (see `index.ts`), so a
  * malformed or incomplete case study fails the build rather than shipping.
  *
- * The `caseStudy` shape intentionally mirrors the portfolio plan:
- * Problem -> Observation -> Question -> User Need -> Constraints ->
- * Options -> Decision -> Architecture -> Challenges -> Code Decisions ->
- * Before/After -> What I Learned.
+ * Case studies keep the overview, contributions, decisions, and lessons short.
+ * Architecture and code examples are optional details readers can expand.
  */
 
 const slug = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "slug must be kebab-case");
-
-export const challengeSchema = z.object({
-  challenge: z.string(),
-  initialApproach: z.string(),
-  problem: z.string(),
-  decision: z.string(),
-  finalSolution: z.string(),
-  result: z.string(),
-});
 
 export const codeDecisionSchema = z.object({
   title: z.string(),
@@ -29,32 +18,19 @@ export const codeDecisionSchema = z.object({
   why: z.string(),
 });
 
-export const beforeAfterSchema = z.object({
-  aspect: z.string(),
-  before: z.string(),
-  after: z.string(),
-  reason: z.string(),
-});
-
 export const caseStudySchema = z.object({
-  problem: z.string(),
-  observation: z.string(),
-  question: z.string(),
-  userNeed: z.string(),
-  constraints: z.array(z.string()).min(1),
-  options: z.array(z.object({ option: z.string(), tradeoff: z.string() })).min(1),
-  decision: z.string(),
-  architecture: z.string(),
-  challenges: z.array(challengeSchema).default([]),
+  overview: z.string().min(1),
+  contributions: z.array(z.string().min(1)).min(1),
+  decisions: z.array(z.string().min(1)).min(1),
+  architecture: z.string().optional(),
   codeDecisions: z.array(codeDecisionSchema).default([]),
-  beforeAfter: z.array(beforeAfterSchema).default([]),
-  learned: z.array(z.string()).min(1),
+  learned: z.array(z.string().min(1)).min(1),
 });
 
 export const projectSchema = z.object({
   slug,
   name: z.string(),
-  /** One-line problem description, not a tech summary. */
+  /** One-sentence summary of what the project does. */
   tagline: z.string(),
   year: z.string(),
   featured: z.boolean().default(false),
@@ -125,7 +101,6 @@ export const skillConnectionSchema = z.tuple([z.string(), z.string()]);
 // Parsed / output types — what components consume.
 export type Project = z.infer<typeof projectSchema>;
 export type CaseStudy = z.infer<typeof caseStudySchema>;
-export type Challenge = z.infer<typeof challengeSchema>;
 export type Experience = z.infer<typeof experienceSchema>;
 export type Skill = z.infer<typeof skillSchema>;
 export type Constellation = z.infer<typeof constellationSchema>;

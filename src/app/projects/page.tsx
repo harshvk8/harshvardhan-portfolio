@@ -7,7 +7,7 @@ import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Projects",
-  description: `Software projects by ${siteConfig.name}, each with a full case study: problem, reasoning, architecture, challenges, and outcome.`,
+  description: `Software projects by ${siteConfig.name}: what I built, key engineering decisions, and lessons learned.`,
 };
 
 export default function ProjectsPage() {
@@ -18,8 +18,7 @@ export default function ProjectsPage() {
     <Container className="py-16">
       <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">Projects</h1>
       <p className="text-muted mt-3 max-w-2xl">
-        Selected projects that show how I approach problems, make engineering decisions, and build
-        solutions. Each one includes a full case study.
+        A closer look at what I built, the decisions behind it, and what I learned.
       </p>
 
       {featured.length > 0 ? (
