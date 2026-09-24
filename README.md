@@ -124,19 +124,18 @@ slug throws during `next build` rather than shipping.
 
 ### Projects (`content/projects.ts`)
 
-Each project's `caseStudy` follows the plan's structure:
+Each project's `caseStudy` has four short sections: `overview`,
+`contributions` (What I worked on), `decisions` (Key decisions), and `learned`.
+Keep the overview to one short paragraph, with two or three concise bullets
+per remaining section. The `tagline` is a one-sentence product summary, also
+used on project cards.
 
-```
-Problem → Observation → Question → User Need → Constraints → Options →
-Decision → Architecture → Challenges → Code Decisions → Before/After →
-What I Learned
-```
-
-`challenges`, `codeDecisions`, and `beforeAfter` are optional arrays — fill them
-in for the strongest projects. `featured: true` surfaces a project on the home
-page and as a planet in the universe. `embedDemo` (a URL) renders a
-click-to-load `<iframe>` of the live app on the case-study page — currently
-enabled for ScheduleAI.
+Optional `architecture` text and `codeDecisions` examples appear in native
+`details` elements, closed by default and usable without JavaScript.
+Examples are labeled as simplified excerpts. `featured: true` surfaces a
+project on the home page; all projects appear as planets in the universe.
+`embedDemo` (a URL) renders a click-to-load `<iframe>` on the case-study page,
+currently enabled for ScheduleAI.
 
 ### Experience, Skills, Certificates
 

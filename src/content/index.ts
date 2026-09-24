@@ -48,7 +48,6 @@ export type { Certificate } from "./certificates";
 export type {
   Project,
   CaseStudy,
-  Challenge,
   Experience,
   Skill,
   Constellation,
