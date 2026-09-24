@@ -5,10 +5,13 @@ import { z } from "zod";
  * `skills.ts` is parsed against these at module load (see `index.ts`), so a
  * malformed or incomplete case study fails the build rather than shipping.
  *
- * The `caseStudy` shape intentionally mirrors the portfolio plan:
- * Problem -> Observation -> Question -> User Need -> Constraints ->
- * Options -> Decision -> Architecture -> Challenges -> Code Decisions ->
- * Before/After -> What I Learned.
+ * The `caseStudy` shape mirrors the portfolio plan: Problem -> Observation ->
+ * Question -> User Need -> Constraints -> Options -> Decision ->
+ * Architecture -> Challenges -> Code Decisions -> Before/After -> What I
+ * Learned. `overview` and `contributions` are a short summary of the same
+ * material, shown by default; the full reasoning above renders in a
+ * collapsed <details> section on the case-study page (see case-study.tsx) so
+ * a fast recruiter scan and the deep "how I think" read are both one page.
  */
 
 const slug = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "slug must be kebab-case");
@@ -37,6 +40,10 @@ export const beforeAfterSchema = z.object({
 });
 
 export const caseStudySchema = z.object({
+  /** 2–3 sentence summary shown before the reader expands anything. */
+  overview: z.string(),
+  /** Short bullets: what I actually built and did, first person. */
+  contributions: z.array(z.string()).min(1),
   problem: z.string(),
   observation: z.string(),
   question: z.string(),

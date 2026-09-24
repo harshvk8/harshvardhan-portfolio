@@ -29,6 +29,14 @@ export const projectsData: ProjectInput[] = [
     ],
     repo: "https://github.com/harshvk8/RedHawkWallet",
     caseStudy: {
+      overview:
+        "A native Android prototype I built with a six-person team, bringing a Montclair State student's campus ID, four balances, events, and offers into one app. I led feature branches and kept authentication, data, and UI responsibilities organized across the team.",
+      contributions: [
+        "Led a six-person team: split work by feature, reviewed code, and kept the Firebase data model consistent across the app.",
+        "Built the digital ID (QR generation and staff verification), the wallet balances screen, and the pay flow.",
+        "Put the email-verification check in one place in the navigation layer instead of on every protected screen.",
+        "Designed offline tap-to-pay using pre-issued signed tokens with a spend cap and expiry.",
+      ],
       problem:
         "A Montclair State student's campus life is split across separate tools: a plastic Red Hawk ID for building access and meal swipes, no easy way to check the Red Hawk Dollars / Flex / Bonus / meal-swipe balances tied to it, and paper flyers for events and offers. Each piece is handled somewhere different.",
       observation:
@@ -123,6 +131,14 @@ export const projectsData: ProjectInput[] = [
     ],
     repo: "https://github.com/harshvk8/redhawkwallet-flutter",
     caseStudy: {
+      overview:
+        "A ground-up rebuild of Red Hawk Wallet in Flutter, turning the Android-only student prototype into a three-role app for student, vendor, and admin on iOS and Android, with every balance change moved to the server.",
+      contributions: [
+        "Rebuilt the app in Flutter for iOS and Android, including a real iOS build with entitlements and signing through Xcode.",
+        "Moved every balance change server-side through Cloud Functions and a Stripe sandbox integration, so the client can never write a balance.",
+        "Designed the role system: one binary, with firestore.rules and the router enforcing student, vendor, and admin boundaries.",
+        "Replaced the static ID QR with a short-lived, server-minted token.",
+      ],
       problem:
         "The Kotlin Red Hawk Wallet worked, but it had three ceilings. It ran on Android only, so students on iPhone couldn't install it. Its tap-to-pay was simulated, with a client-side Firestore transaction doing the debit, which meant the app was trusted to move money. And it was student-only: no vendor or admin side, so it couldn't function as a campus commerce platform.",
       observation:
@@ -235,6 +251,14 @@ export const projectsData: ProjectInput[] = [
     demo: "https://schedule-ai-eta.vercel.app",
     embedDemo: "https://schedule-ai-eta.vercel.app",
     caseStudy: {
+      overview:
+        "A conversational scheduling assistant that turns a student's messages into constraints, while a separate rule-based engine builds and validates the actual timetable, so the schedule it returns is always conflict-free.",
+      contributions: [
+        "Built the chat interface and the extraction step that turns messages into structured constraints.",
+        "Designed the rule engine that places courses, checks for conflicts, and explains why a slot was rejected.",
+        "Deployed it on Vercel with a custom domain, and resolved the production issues (DNS, config) that only showed up after launch.",
+        "Reused the same model-extracts, engine-decides split to build this portfolio's own meeting scheduler.",
+      ],
       problem:
         "Every semester, students rebuild a timetable by hand: preferred times, which professor, no clashes, requirements met. It's a constraint problem solved with a spreadsheet and trial and error, and one missed conflict often isn't caught until it's too late to change sections.",
       observation:
@@ -283,8 +307,14 @@ export const projectsData: ProjectInput[] = [
     stack: ["Kotlin", "Jetpack Compose", "MVVM"],
     repo: "https://github.com/harshvk8/TodayOnlyToDo",
     // NOTE: the observation / learned below is Harshvardhan's framing, written
-    // now — confirm it matches the original reasoning before treating as history.
+    // now; confirm it matches the original reasoning before treating as history.
     caseStudy: {
+      overview:
+        "A small offline Android to-do app that deliberately can't hold yesterday's tasks. Everything clears at the start of a new day, so the list never becomes a backlog.",
+      contributions: [
+        "Built the app fully offline, with local persistence that survives restarts but clears on a new day.",
+        "Used MVVM to keep the date logic, storage, and UI state in separate, testable pieces.",
+      ],
       problem:
         "A to-do list that keeps everything turns into a list you stop reading. Last week's unfinished items sit at the bottom, and nothing gets done because the list itself is discouraging.",
       observation:
@@ -328,6 +358,13 @@ export const projectsData: ProjectInput[] = [
     featured: false,
     stack: ["Go", "Go+", "Comparative analysis"],
     caseStudy: {
+      overview:
+        "A comparative study of Go and Go+, testing whether Go+'s higher-level syntax actually reduces what a developer writes, using representative programs implemented in both languages.",
+      contributions: [
+        "Implemented the same representative programs in idiomatic Go and Go+ to compare directly.",
+        "Compared readability, control-flow constructs, and error-handling ceremony rather than raw performance.",
+        "Wrote up where the syntax difference actually helps and where it doesn't.",
+      ],
       problem:
         "Go+ takes Go's compiler, runtime, and single-binary deployment and layers higher-level syntax on top: lambdas, list comprehensions, lighter boilerplate. The question worth studying is whether that actually reduces how much a developer has to write and reason about, or whether it's cosmetic.",
       observation:
@@ -399,6 +436,14 @@ export const projectsData: ProjectInput[] = [
     repo: "https://github.com/harshvk8/harshvardhan-portfolio",
     demo: "https://harshvardhannimesh.com",
     caseStudy: {
+      overview:
+        "This site itself: a Next.js portfolio built in three phases, with an AI meeting-request assistant on the Contact page that reads a recruiter's preferred time and offers real open slots, without ever letting the model invent one.",
+      contributions: [
+        "Designed the Explore/Recruiter mode split so the 3D universe is additive, never required, to reach any content.",
+        "Built the meeting-request assistant: Claude extracts constraints, a deterministic engine generates and re-validates every slot.",
+        "Added cost and abuse controls (a profanity gate, Haiku triage, a two-strike cutoff) before the endpoint went live, not after.",
+        "Wrote every project's case study around the same reasoning structure: problem, options considered, decision, and what I learned.",
+      ],
       problem:
         "Most developer portfolios are the same shape: a hero section, a grid of project cards, a contact form that goes into a void. They prove you can assemble a page, not that you can notice a real problem, weigh options, and defend a decision. As a CS student applying for internships and new-grad roles, a portfolio that only listed technologies wasn't going to be the thing that got me a callback.",
       observation:
