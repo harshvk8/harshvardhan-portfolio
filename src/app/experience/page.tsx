@@ -6,9 +6,13 @@ import { Reveal } from "@/components/reveal";
 import { experience, getProject } from "@/content";
 import { siteConfig } from "@/lib/site";
 
+const description = `A journey through the environments that changed how ${siteConfig.name} works: retail operations, AI evaluation, IT support, and building software.`;
+
 export const metadata: Metadata = {
   title: "Experience",
-  description: `A journey through the environments that changed how ${siteConfig.name} works: retail operations, AI evaluation, IT support, and building software.`,
+  description,
+  alternates: { canonical: "/experience" },
+  openGraph: { title: `Experience — ${siteConfig.name}`, description, url: "/experience" },
 };
 
 export default function ExperiencePage() {

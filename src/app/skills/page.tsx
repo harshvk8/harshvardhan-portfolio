@@ -3,9 +3,13 @@ import { Container } from "@/components/container";
 import { SkillsExplorer } from "@/components/skills/skills-explorer";
 import { siteConfig } from "@/lib/site";
 
+const description = `What ${siteConfig.name} builds with: five skill constellations, each backed by evidence from real projects and roles rather than proficiency percentages.`;
+
 export const metadata: Metadata = {
   title: "Skills",
-  description: `What ${siteConfig.name} builds with: five skill constellations, each backed by evidence from real projects and roles rather than proficiency percentages.`,
+  description,
+  alternates: { canonical: "/skills" },
+  openGraph: { title: `Skills — ${siteConfig.name}`, description, url: "/skills" },
 };
 
 export default function SkillsPage() {

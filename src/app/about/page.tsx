@@ -6,9 +6,13 @@ import { ThinkingFlow } from "@/components/thinking-flow";
 import { publicFileExists } from "@/lib/assets";
 import { siteConfig } from "@/lib/site";
 
+const description = `About ${siteConfig.name}: background, interests, and how I approach building software.`;
+
 export const metadata: Metadata = {
   title: "About",
-  description: `About ${siteConfig.name}: background, interests, and how I approach building software.`,
+  description,
+  alternates: { canonical: "/about" },
+  openGraph: { title: `About — ${siteConfig.name}`, description, url: "/about" },
 };
 
 const PHOTO = "harshvardhan.jpg";

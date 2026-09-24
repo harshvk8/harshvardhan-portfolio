@@ -5,9 +5,13 @@ import { Reveal } from "@/components/reveal";
 import { projects } from "@/content";
 import { siteConfig } from "@/lib/site";
 
+const description = `Software projects by ${siteConfig.name}, each with a full case study: problem, reasoning, architecture, challenges, and outcome.`;
+
 export const metadata: Metadata = {
   title: "Projects",
-  description: `Software projects by ${siteConfig.name}, each with a full case study: problem, reasoning, architecture, challenges, and outcome.`,
+  description,
+  alternates: { canonical: "/projects" },
+  openGraph: { title: `Projects — ${siteConfig.name}`, description, url: "/projects" },
 };
 
 export default function ProjectsPage() {

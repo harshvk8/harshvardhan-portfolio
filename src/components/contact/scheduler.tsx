@@ -1,7 +1,15 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ArrowUp, CalendarPlus, Check, Download, Loader2, Sparkles } from "lucide-react";
+import {
+  AlertTriangle,
+  ArrowUp,
+  CalendarPlus,
+  Check,
+  Download,
+  Loader2,
+  Sparkles,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { siteConfig } from "@/lib/site";
 import type {
@@ -21,7 +29,7 @@ type Msg = {
 };
 
 const GREETING =
-  "Tell me roughly when works, like a day, a week, or mornings vs. afternoons, and I'll pull up open times for a call with Harshvardhan.";
+  "Tell me what day or time works for you, and I'll suggest available times for a call with Harshvardhan.";
 
 const uid = () =>
   typeof crypto !== "undefined" && crypto.randomUUID
@@ -141,8 +149,9 @@ export function Scheduler() {
         </div>
         <p className="text-muted mt-2 text-sm">
           Talk through a time in a couple of lines instead of an email thread. It reads your
-          preferred day and time, then shows real open slots. Browsing times needs nothing;
-          confirming needs your full name and email.
+          preferred day and time, then shows real open slots. You can view available times
+          without entering personal details; sending a meeting request needs your full name and
+          email.
         </p>
         <button
           type="button"
@@ -155,24 +164,47 @@ export function Scheduler() {
     );
   }
 
-  // ── Confirmed ─────────────────────────────────────────────────────────────
+  // ── Request sent (or failed to send) ────────────────────────────────────
   if (result) {
     return (
       <div className="border-border bg-surface/40 mt-8 rounded-xl border p-5">
-        <div className="flex items-center gap-2">
-          <span className="grid h-6 w-6 place-items-center rounded-full bg-green-500/15 text-green-600 dark:text-green-400">
-            <Check className="h-4 w-4" />
-          </span>
-          <h2 className="text-sm font-medium">You&apos;re on the calendar</h2>
-        </div>
-        <p className="mt-3 text-sm">
-          <span className="font-medium">{result.slotLabel}</span>
-        </p>
-        <p className="text-muted mt-1 text-sm">
-          {result.notified
-            ? "Harshvardhan has been emailed the details and will send an invite."
-            : "Save it below. Harshvardhan will confirm by email shortly."}
-        </p>
+        {result.notified ? (
+          <>
+            <div className="flex items-center gap-2">
+              <span className="grid h-6 w-6 place-items-center rounded-full bg-green-500/15 text-green-600 dark:text-green-400">
+                <Check className="h-4 w-4" />
+              </span>
+              <h2 className="text-sm font-medium">Meeting request sent</h2>
+            </div>
+            <p className="mt-3 text-sm">
+              <span className="font-medium">{result.slotLabel}</span>
+            </p>
+            <p className="text-muted mt-1 text-sm">
+              Harshvardhan has been emailed this request and will reply to confirm. This holds the
+              slot as a request, not a booked meeting, until he does.
+            </p>
+          </>
+        ) : (
+          <>
+            <div className="flex items-center gap-2">
+              <span className="grid h-6 w-6 place-items-center rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400">
+                <AlertTriangle className="h-4 w-4" />
+              </span>
+              <h2 className="text-sm font-medium">Request not delivered</h2>
+            </div>
+            <p className="mt-3 text-sm">
+              <span className="font-medium">{result.slotLabel}</span>
+            </p>
+            <p className="text-muted mt-1 text-sm">
+              Your request for this time couldn&apos;t be sent automatically. Email Harshvardhan
+              directly to set it up:{" "}
+              <a href={`mailto:${siteConfig.email}`} className="text-accent">
+                {siteConfig.email}
+              </a>
+              .
+            </p>
+          </>
+        )}
         <div className="mt-4 flex flex-wrap gap-2">
           <a
             href={result.calendar.googleUrl}
@@ -266,10 +298,12 @@ export function Scheduler() {
       {selected ? (
         <div className="border-border/60 border-t p-4">
           <p className="text-sm">
-            Confirm <span className="font-medium">{selected.label}</span> ({selected.durationMin}{" "}
+            Request <span className="font-medium">{selected.label}</span> ({selected.durationMin}{" "}
             min)
           </p>
-          <p className="text-muted mt-1 text-xs">Required to confirm: your full name and email.</p>
+          <p className="text-muted mt-1 text-xs">
+            Required to send this request: your full name and email.
+          </p>
           <div className="mt-3 grid gap-2 sm:grid-cols-2">
             <label className="block">
               <span className="sr-only">Your full name</span>
@@ -329,7 +363,7 @@ export function Scheduler() {
               ) : (
                 <Check className="h-4 w-4" />
               )}
-              Confirm meeting
+              Request meeting
             </button>
             <button
               type="button"

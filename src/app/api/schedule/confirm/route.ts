@@ -69,6 +69,21 @@ function icsStamp(d: Date): string {
     .replace(/\.\d{3}Z$/, "Z");
 }
 
+/** Escapes a TEXT value per RFC 5545 §3.3.11 (backslash, comma, semicolon, newline). */
+function icsText(v: string): string {
+  return v
+    .replace(/\\/g, "\\\\")
+    .replace(/;/g, "\\;")
+    .replace(/,/g, "\\,")
+    .replace(/\r?\n/g, "\\n");
+}
+
+/** Escapes a parameter value (e.g. CN=), quoting it if it holds a reserved character. */
+function icsParam(v: string): string {
+  const cleaned = v.replace(/[\r\n]/g, " ").replace(/"/g, "'");
+  return /[,;:"]/.test(cleaned) ? `"${cleaned}"` : cleaned;
+}
+
 function buildIcs(
   start: Date,
   end: Date,
@@ -79,7 +94,7 @@ function buildIcs(
 ): string {
   const desc = ["Requested via the portfolio scheduling assistant."];
   if (phone) desc.push(`Phone: ${phone}`);
-  if (note) desc.push(`Note: ${note.replace(/\n/g, " ")}`);
+  if (note) desc.push(`Note: ${note}`);
   return [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
@@ -90,19 +105,19 @@ function buildIcs(
     `DTSTAMP:${icsStamp(new Date())}`,
     `DTSTART:${icsStamp(start)}`,
     `DTEND:${icsStamp(end)}`,
-    `SUMMARY:Intro call — ${name} × ${siteConfig.name}`,
-    `DESCRIPTION:${desc.join(" ")}`,
-    `ORGANIZER;CN=${siteConfig.name}:mailto:${siteConfig.email}`,
-    `ATTENDEE;CN=${name};RSVP=TRUE:mailto:${email}`,
+    `SUMMARY:Intro call with ${icsText(siteConfig.name)}`,
+    `DESCRIPTION:${icsText(desc.join(" "))}`,
+    `ORGANIZER;CN=${icsParam(siteConfig.name)}:mailto:${siteConfig.email}`,
+    `ATTENDEE;CN=${icsParam(name)};RSVP=TRUE:mailto:${email}`,
     "END:VEVENT",
     "END:VCALENDAR",
   ].join("\r\n");
 }
 
-function googleUrl(start: Date, end: Date, name: string): string {
+function googleUrl(start: Date, end: Date): string {
   const params = new URLSearchParams({
     action: "TEMPLATE",
-    text: `Intro call — ${name} × ${siteConfig.name}`,
+    text: `Intro call with ${siteConfig.name}`,
     dates: `${icsStamp(start)}/${icsStamp(end)}`,
     details: "Requested via the portfolio scheduling assistant.",
   });
@@ -182,6 +197,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   } catch {
     return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
   }
+  if (typeof body !== "object" || body === null || Array.isArray(body)) {
+    return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
+  }
 
   const b = body as {
     slot?: { startISO?: unknown; endISO?: unknown };
@@ -244,7 +262,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     ok: true,
     slotLabel,
     calendar: {
-      googleUrl: googleUrl(start, end, name),
+      googleUrl: googleUrl(start, end),
       ics: buildIcs(start, end, name, email, phone, note),
     },
     notified,

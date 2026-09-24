@@ -54,3 +54,27 @@ export async function withinLimits(ip: string, limiters: (Ratelimit | null)[]): 
   }
   return true;
 }
+
+const OFF_TOPIC_TTL_SECONDS = 24 * 60 * 60;
+
+/**
+ * Server-side, per-IP off-topic strike count for the scheduling chat. Backed
+ * by Redis when configured, so a caller can't reset it by omitting prior
+ * turns from the request body (unlike counting warnings out of the client-
+ * supplied message history). Returns null when Redis isn't configured — the
+ * caller falls back to the transcript heuristic in that case.
+ */
+export async function getOffTopicStrikes(ip: string): Promise<number | null> {
+  if (!redis) return null;
+  const count = await redis.get<number>(`rl:sched:offtopic:${ip}`);
+  return count ?? 0;
+}
+
+/** Increments the strike count (creating it with a 24h TTL) and returns the new value. */
+export async function addOffTopicStrike(ip: string): Promise<number | null> {
+  if (!redis) return null;
+  const key = `rl:sched:offtopic:${ip}`;
+  const count = await redis.incr(key);
+  if (count === 1) await redis.expire(key, OFF_TOPIC_TTL_SECONDS);
+  return count;
+}

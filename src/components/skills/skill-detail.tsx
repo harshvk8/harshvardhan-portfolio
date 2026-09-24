@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
@@ -8,6 +9,9 @@ import type { Skill } from "@/content";
 
 type ActiveSkill = Skill & { constellationName: string };
 
+/** A non-modal detail panel (the map behind it stays interactive). Follows
+ *  the APG non-modal dialog pattern: focus moves into it on open, and
+ *  Escape closes it from anywhere on the page. */
 export function SkillDetail({
   skill,
   onClose,
@@ -15,6 +19,18 @@ export function SkillDetail({
   skill: ActiveSkill | null;
   onClose: () => void;
 }) {
+  const closeRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!skill) return;
+    closeRef.current?.focus();
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") onClose();
+    }
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [skill, onClose]);
+
   return (
     <AnimatePresence>
       {skill ? (
@@ -26,7 +42,7 @@ export function SkillDetail({
           transition={{ duration: 0.22 }}
           className="border-border bg-surface/95 fixed inset-x-4 bottom-4 z-20 rounded-xl border p-4 shadow-xl backdrop-blur sm:absolute sm:inset-x-auto sm:top-4 sm:right-4 sm:bottom-auto sm:w-72"
           role="dialog"
-          aria-label={`${skill.name} — where I used it`}
+          aria-label={`${skill.name}: where I used it`}
         >
           <div className="flex items-start justify-between gap-3">
             <div>
@@ -36,6 +52,7 @@ export function SkillDetail({
               <p className="mt-0.5 text-base font-semibold">{skill.name}</p>
             </div>
             <button
+              ref={closeRef}
               type="button"
               onClick={onClose}
               aria-label="Close"

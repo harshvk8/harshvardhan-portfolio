@@ -1,7 +1,14 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextResponse, type NextRequest } from "next/server";
 import { schedulingConfig } from "@/content/scheduling";
-import { chatLimiter, dayLimiter, getIp, withinLimits } from "@/lib/ratelimit";
+import {
+  addOffTopicStrike,
+  chatLimiter,
+  dayLimiter,
+  getIp,
+  getOffTopicStrikes,
+  withinLimits,
+} from "@/lib/ratelimit";
 import { siteConfig } from "@/lib/site";
 import { describeAvailability, filterSlots, generateSlots } from "@/lib/scheduling/slots";
 import type { ChatTurn, MeetingConstraints, ScheduleChatResponse } from "@/lib/scheduling/types";
@@ -174,7 +181,7 @@ function systemPrompt(): string {
     "2. Always call propose_meeting_slots. Your job is to extract constraints and write the reply.",
     "3. Never state, guess, or invent a specific open time — the app generates real slots from the",
     "   availability above and shows them as buttons under your reply. You MAY describe the",
-    "   availability in general terms (e.g. 'Wednesdays only work in the evening').",
+    "   availability in general terms (e.g. 'Fridays only work in the evening').",
     "4. If they ask about a specific day: tell them his open window(s) that day from the list above,",
     "   or if that day has none, say he's booked that day (classes / work) and offer the nearest days.",
     "5. Move toward times fast. Any hint of timing ('next week', 'Tuesday', 'mornings') is enough —",
@@ -186,6 +193,9 @@ function systemPrompt(): string {
     "   to look at times.",
     "8. Politely decline anything that isn't about scheduling this call, and set intent='off_topic'.",
     "9. Every tool field is plain text — no XML, tags, or markup inside any value.",
+    "10. Every time is in Harshvardhan's timezone (ET); the app does not convert to the visitor's",
+    "    own timezone. If they mention their own timezone or a city, say the slots shown are ET and",
+    "    they'll need to convert. Never imply a slot has already been adjusted to their local time.",
   ]
     .filter(Boolean)
     .join("\n");
@@ -216,7 +226,11 @@ function sanitizeTurns(raw: unknown): ChatTurn[] | null {
   return turns.slice(-MAX_TURNS);
 }
 
-function warningResponse(priorWarnings: number): NextResponse {
+async function warningResponse(ip: string, priorWarnings: number): Promise<NextResponse> {
+  // Persists the strike server-side, keyed by IP, when Redis is configured
+  // — a no-op otherwise (see the transcript fallback where priorWarnings is
+  // computed).
+  await addOffTopicStrike(ip);
   const payload: ScheduleChatResponse = {
     reply: priorWarnings >= 1 ? WARN_2 : WARN_1,
     slots: [],
@@ -275,18 +289,27 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   } catch {
     return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
   }
+  if (typeof body !== "object" || body === null || Array.isArray(body)) {
+    return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
+  }
 
   const turns = sanitizeTurns((body as { messages?: unknown }).messages);
   if (!turns || turns.length === 0 || turns[turns.length - 1].role !== "user") {
     return NextResponse.json({ error: "Expected a non-empty message list." }, { status: 400 });
   }
 
-  // Strikes are counted straight from the transcript (both warnings carry
-  // OFF_TOPIC_MARK), so the client can't reset them. Two warnings, then the
-  // conversation is closed and no further model calls are made.
-  const priorWarnings = turns.filter(
+  // The authoritative strike count is server-side (Redis, keyed by IP), so a
+  // caller can't reset it by omitting prior turns from the request body.
+  // Without Redis configured, fall back to counting warnings in the
+  // transcript (both warnings carry OFF_TOPIC_MARK) — weaker, since a
+  // hand-crafted request can omit it, but still the honest best effort.
+  // Whichever source is higher wins, so a stale IP can't undercount either.
+  const serverStrikes = await getOffTopicStrikes(ip);
+  const transcriptStrikes = turns.filter(
     (t) => t.role === "assistant" && t.content.includes(OFF_TOPIC_MARK),
   ).length;
+  const priorWarnings =
+    serverStrikes !== null ? Math.max(serverStrikes, transcriptStrikes) : transcriptStrikes;
   if (priorWarnings >= 2) {
     const ended: ScheduleChatResponse = {
       reply: ENDED,
@@ -302,14 +325,14 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   const client = new Anthropic({ apiKey });
 
   // 1. Zero-cost gate.
-  if (PROFANITY.test(lastUserContent)) return warningResponse(priorWarnings);
+  if (PROFANITY.test(lastUserContent)) return warningResponse(ip, priorWarnings);
 
   // 2. Cheap Haiku triage before spending Sonnet. Skipped once a visitor has
   //    been warned — the full pass below then runs on Haiku and classifies
   //    inline, so no Sonnet call is ever spent on a flagged conversation.
   if (priorWarnings === 0) {
     const offTopic = await triageIsOffTopic(client, turns);
-    if (offTopic === true) return warningResponse(priorWarnings);
+    if (offTopic === true) return warningResponse(ip, priorWarnings);
   }
 
   // 3. Full extraction pass. Haiku once flagged, Sonnet otherwise.
@@ -377,7 +400,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   const { reply, showingSlots, intent, ...constraints } = toolInput;
 
   // Full pass still flagged it off-topic (e.g. triage was lenient / skipped).
-  if (intent === "off_topic") return warningResponse(priorWarnings);
+  if (intent === "off_topic") return warningResponse(ip, priorWarnings);
 
   let slots: ScheduleChatResponse["slots"] = [];
   let note: string | undefined;

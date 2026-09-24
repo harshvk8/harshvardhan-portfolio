@@ -6,9 +6,13 @@ import { publicFileExists } from "@/lib/assets";
 import { constellations, experience } from "@/content";
 import { siteConfig } from "@/lib/site";
 
+const description = `Resume for ${siteConfig.name} — ${siteConfig.role}. View or download the PDF.`;
+
 export const metadata: Metadata = {
   title: "Resume",
-  description: `Resume for ${siteConfig.name} — ${siteConfig.role}. View or download the PDF.`,
+  description,
+  alternates: { canonical: "/resume" },
+  openGraph: { title: `Resume — ${siteConfig.name}`, description, url: "/resume" },
 };
 
 export default function ResumePage() {
