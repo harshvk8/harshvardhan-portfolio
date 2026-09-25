@@ -30,7 +30,7 @@ export default function UniverseScene({
   onOpenAbout: () => void;
 }) {
   const [target, setTarget] = useState<THREE.Vector3 | null>(null);
-  const [hoveredProject, setHoveredProject] = useState<Project | null>(null);
+  const [hovered, setHovered] = useState<{ project: Project; enter: () => void } | null>(null);
   const beltInner = planets.length ? planets[planets.length - 1].radius + 2.4 : 14;
 
   return (
@@ -67,10 +67,10 @@ export default function UniverseScene({
               config={config}
               reducedMotion={reducedMotion}
               dimmed={enteringSlug != null && enteringSlug !== config.project.slug}
-              onHover={setHoveredProject}
+              onHover={(project, enter) => setHovered(project && enter ? { project, enter } : null)}
               onEnter={(slug, pos) => {
                 setTarget(pos);
-                setHoveredProject(null);
+                setHovered(null);
                 onEnter(slug);
               }}
             />
@@ -111,7 +111,11 @@ export default function UniverseScene({
         />
       </Canvas>
 
-      <PlanetNotification project={hoveredProject} onClose={() => setHoveredProject(null)} />
+      <PlanetNotification
+        project={hovered?.project ?? null}
+        onClose={() => setHovered(null)}
+        onExplore={() => hovered?.enter()}
+      />
     </>
   );
 }

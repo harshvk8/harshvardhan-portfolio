@@ -11,9 +11,12 @@ import type { Project } from "@/content";
 export function PlanetNotification({
   project,
   onClose,
+  onExplore,
 }: {
   project: Project | null;
   onClose: () => void;
+  /** re-fires the same camera-zoom transition as clicking the planet itself */
+  onExplore: () => void;
 }) {
   useEffect(() => {
     if (!project) return;
@@ -52,7 +55,13 @@ export function PlanetNotification({
           <p className="text-muted mt-2 font-mono text-[10px]">
             {project.stack.slice(0, 3).join(" · ")}
           </p>
-          <p className="text-accent mt-2 text-xs">Explore project →</p>
+          <button
+            type="button"
+            onClick={onExplore}
+            className="text-accent mt-2 block cursor-pointer text-xs hover:underline"
+          >
+            Explore project →
+          </button>
         </motion.div>
       ) : null}
     </AnimatePresence>
