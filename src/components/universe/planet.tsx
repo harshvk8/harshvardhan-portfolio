@@ -18,14 +18,23 @@ export function Planet({
   /** another planet is being entered — fade this one back */
   dimmed: boolean;
   onEnter: (slug: string, worldPos: THREE.Vector3) => void;
-  /** reports the hovered project up so it can render as a corner notification */
-  onHover: (project: Project | null) => void;
+  /** reports the hovered project (and its live "enter" trigger) up so it can
+   *  render as a corner notification whose own Explore button re-fires the
+   *  same camera-zoom transition as clicking the planet directly */
+  onHover: (project: Project | null, enter?: () => void) => void;
 }) {
   const { project, radius, speed, size, color, angle } = config;
   const pivot = useRef<THREE.Group>(null);
   const body = useRef<THREE.Mesh>(null);
   const theta = useRef(angle);
   const [hovered, setHovered] = useState(false);
+
+  // Reads pivot.current lazily, so calling this later (e.g. from the corner
+  // notification's Explore button, after the planet has kept orbiting) still
+  // captures its current world position rather than a stale one from hover time.
+  const enter = () => {
+    if (pivot.current) onEnter(project.slug, pivot.current.getWorldPosition(new THREE.Vector3()));
+  };
 
   useFrame((_, delta) => {
     if (!reducedMotion) {
@@ -51,7 +60,7 @@ export function Planet({
           e.stopPropagation();
           setHovered(true);
           setCursor("pointer");
-          onHover(project);
+          onHover(project, enter);
         }}
         onPointerOut={() => {
           setHovered(false);
@@ -59,8 +68,7 @@ export function Planet({
         }}
         onClick={(e) => {
           e.stopPropagation();
-          if (pivot.current)
-            onEnter(project.slug, pivot.current.getWorldPosition(new THREE.Vector3()));
+          enter();
         }}
       >
         <sphereGeometry args={[1, 40, 40]} />
