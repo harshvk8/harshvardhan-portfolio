@@ -55,6 +55,22 @@ export const experienceData: ExperienceInput[] = [
       "IT support taught me to diagnose problems from incomplete information, communicate technical steps to non-technical users, and tell symptoms apart from the actual cause of a problem.",
   },
   {
+    org: "Montclair State University, School of Computing",
+    role: "Undergraduate Research Scholar (Mentor: Dr. Stefan Robila)",
+    period: "Sep 2026 – Present",
+    kind: "work",
+    theme: "Research + rigor",
+    developed: [
+      "Research methodology",
+      "Metadata standardization",
+      "Geospatial data processing",
+      "Python",
+      "Working with a faculty mentor",
+    ],
+    story:
+      "Researching metadata standardization for hyperspectral datasets showed me that discoverability is a data-modeling problem before it's a search problem, and pushed me to write code that holds up against messy, inconsistent real-world metadata.",
+  },
+  {
     org: "Software & Research Projects",
     period: "2024 – Present",
     kind: "projects",
